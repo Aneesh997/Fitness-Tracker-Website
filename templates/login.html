@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness App - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<h2>FIT TRACK PRO</h2>
+<div class="container" id="container">
+    <div class="form-container sign-up-container">
+        <form action="/register" method="POST">
+            <h1>Create Account</h1>
+            
+            <span>or use your username for registration</span>
+            <input type="text" name="Username" placeholder="Username" required />
+            <input type="password" name="password" placeholder="Password" required />
+            <input type="password" name="Confirm Password" placeholder="Confirm Password" required />
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+    <div class="form-container sign-in-container">
+        <form id="login-form">
+            <h1>Sign in</h1>
+            
+            <span>or register as a new account </span>
+            <input type="text" id="username" placeholder="Username" required />
+            <input type="password" id="password" placeholder="Password" required />
+            <p id="error-message" style="color: red; font-weight: bold;"></p>
+            
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1>
+                <p>To keep connected with us please login with your personal info</p>
+                <button class="ghost" id="signIn">Sign In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start the journey with us</p>
+                <button class="ghost" id="signUp">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+    
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+    
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+    
+        // Login form submission
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();  // Prevent default form submission
+    
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+    
+            errorMessage.textContent = '';
+    
+            fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    errorMessage.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorMessage.textContent = 'An error occurred. Please try again.';
+            });
+        });
+    
+        // Registration form submission
+        document.querySelector(".sign-up-container form").addEventListener("submit", function (event) {
+            event.preventDefault();  // Prevent default form submission
+    
+            const username = document.querySelector('input[name="Username"]').value;
+            const password = document.querySelector('input[name="password"]').value;
+            const confirmPassword = document.querySelector('input[name="Confirm Password"]').value;
+    
+            // Password match validation
+            if (password !== confirmPassword) {
+                alert("Passwords do not match. Please try again.");
+                return;
+            }
+    
+            fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Registration successful! Please log in.");
+                    container.classList.remove("right-panel-active"); // Switch to login panel
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again.");
+            });
+        });
+    });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Pricing | FTP</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slicknav.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flaticon.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gijgo.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animated-headline.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slick.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nice-select.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="black-bg">
+    <!-- ? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <!--<img src="{{ url_for('static', filename='img/logo/loder.png') }}" alt="">-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader Start -->
+    <header>
+        <!-- Header Start -->
+        <div class="header-area header-transparent">
+            <div class="main-header header-sticky">
+                <div class="container-fluid">
+                    <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                        <!-- Logo -->
+                         <!--<div class="logo">
+                           <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/logo/logo.png') }}" alt=""></a>
+                        </div>-->
+                        <!-- Main-menu -->
+                        <div class="main-menu f-right d-none d-lg-block">
+                            <nav>
+                                <ul id="navigation">
+                                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                                    <li><a href="{{ url_for('about') }}">About</a></li>
+                                    <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                    <li class="active"><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                    
+                                        
+                                    </li>
+                                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                                </ul>
+                            </nav>
+                        </div>          
+                        <!-- Header-btn -->
+                        <div class="header-btns d-none d-lg-block f-right">
+                            {% if 'user' in session %}
+                                <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="btn">Login</a>
+                            {% endif %}
+                        </div>
+                        <!-- Mobile Menu -->
+                        <div class="col-12">
+                            <div class="mobile_menu d-block d-lg-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <!--? Hero Start -->
+        <div class="slider-area2">
+            <div class="slider-height2 d-flex align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="hero-cap hero-cap2 pt-70">
+                                <h2>Pricing</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hero End -->
+        <!-- Courses area start -->
+        <section class="pricing-area section-padding40 fix">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="section-tittle text-center mb-55 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".1s">
+                            <h2>Pricing</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="properties mb-30 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                            <div class="properties__card">
+                                <div class="about-icon">
+                                    <img src="{{ url_for('static', filename='img/icon/price.svg') }}" alt="">
+                                </div>
+                                <div class="properties__caption">
+                                    <span class="month">3 months</span>
+                                    <p class="mb-25">₹4999  <span>(Single class)</span></p>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Access to workout and diet tracking </p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Basic progress analytics</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Daily calorie and macro tracking</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Limited exercise library</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features mb-20">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Email support</p>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="border-btn border-btn2">Join Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="properties mb-30 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".4s">
+                            <div class="properties__card">
+                                <div class="about-icon">
+                                    <img src="{{ url_for('static', filename='img/icon/price.svg') }}" alt="">
+                                </div>
+                                <div class="properties__caption">
+                                    <span class="month">6 months</span>
+                                    <p class="mb-25">₹8999  <span>(Single class)</span></p>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>All Basic features + </p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Personalized workout plans</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Custom meal recommendations</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Weekly progress reports</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features mb-20">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Community forum access</p>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="border-btn border-btn2">Join Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="properties mb-30 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s">
+                            <div class="properties__card">
+                                <div class="about-icon">
+                                    <img src="{{ url_for('static', filename='img/icon/price.svg') }}" alt="">
+                                </div>
+                                <div class="properties__caption">
+                                    <span class="month">12 months</span>
+                                    <p class="mb-25">₹12999  <span>(Single class)</span></p>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>All Advanced features + </p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>AI-powered fitness insights</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Goal-based coaching tips</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>Exclusive workout challenges</p>
+                                        </div>
+                                    </div>
+                                    <div class="single-features mb-20">
+                                        <div class="features-icon">
+                                            <img src="{{ url_for('static', filename='img/icon/check.svg') }}" alt="">
+                                        </div>
+                                        <div class="features-caption">
+                                            <p>1-on-1 nutrition consultation</p>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="border-btn border-btn2">Join Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Courses area End -->
+        <!-- ? services-area -->
+        <section class="services-area">
+            <div class="container">
+                <div class="row justify-content-between">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                        <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".1s">
+                            <div class="features-icon">
+                                <img src="{{ url_for('static', filename='img/icon/icon1.svg') }}" alt="">
+                            </div>
+                            <div class="features-caption">
+                                <h3>Location</h3>
+                                <p>RV University, Bangalore Kanrnataka 560059</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                        <div class="single-services mb-40 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                            <div class="features-icon">
+                                <img src="{{ url_for('static', filename='img/icon/icon2.svg') }}" alt="">
+                            </div>
+                            <div class="features-caption">
+                                <h3>Phone</h3>
+                                <p>+91 2368397467</p>
+                                <p>+91 4574538767</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                        <div class="single-services mb-40 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                            <div class="features-icon">
+                                <img src="{{ url_for('static', filename='img/icon/icon3.svg') }}" alt="">
+                            </div>
+                            <div class="features-caption">
+                                <h3>Email</h3>
+                                <p>amoghmk.btech23@rvu.edu.in</p>
+                                <p>abhayan.btech23@rvu.edu.in</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <!--? Footer Start-->
+        <div class="footer-area black-bg">
+            <div class="container">
+                <div class="footer-top footer-padding">
+                    <!-- Footer Menu -->
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="single-footer-caption mb-50 text-center">
+                                <!-- logo -->
+                                <div class="footer-logo wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                                   <!-- <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/logo/logo2_footer.png') }}" alt=""></a>-->
+                                </div>
+                                <!-- Menu -->
+                                <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                                    <div class="main-header main-header2">
+                                        <div class="menu-wrapper menu-wrapper2">
+                                            <!-- Main-menu -->
+                                            <div class="main-menu main-menu2 text-center">
+                                                <nav>
+                                                    <ul>
+                                                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                                                        <li><a href="{{ url_for('about') }}">About</a></li>
+                                                        <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                                        <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                                        
+                                                        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- social -->
+                                <div class="footer-social mt-30 wow fadeInUp" data-wow-duration="3s" data-wow-delay=".8s">
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+   
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here -->
+    <script src="{{ url_for('static', filename='js/vendor/modernizr-3.5.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.slicknav.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slick.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/animated.headline.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.magnific-popup.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gijgo.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.counterup.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.countdown.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hover-direction-snake.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.form.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mail-script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.ajaxchimp.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
