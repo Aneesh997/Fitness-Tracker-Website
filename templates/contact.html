@@ -51,6 +51,7 @@
                                     <li><a href="{{ url_for('about') }}">About</a></li>
                                     <li><a href="{{ url_for('courses') }}">Courses</a></li>
                                     <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                    <li><a href="{{ url_for('tracking') }}">Tracking</a></li>
                                     
                                         
                                     <li class="active"><a href="{{ url_for('contact') }}">Contact</a></li>
@@ -254,10 +255,12 @@
                                             <div class="main-menu main-menu2 text-center">
                                                 <nav>
                                                     <ul>
-                                                        <li><a href="{{ url_for('home') }}">Home</a></li>
-                                                        <li><a href="{{ url_for('about') }}">About</a></li>
-                                                        <li><a href="{{ url_for('courses') }}">Courses</a></li>
-                                                        <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                                        <ul id="navigation">
+                                                            <li><a href="{{ url_for('home') }}">Home</a></li>
+                                                            <li><a href="{{ url_for('about') }}">About</a></li>
+                                                            <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                                            <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                                            <li><a href="{{ url_for('tracking') }}">Tracking</a></li>
                                                         
                                                         <li><a href="{{ url_for('contact') }}">Contact</a></li>
                                                     </ul>

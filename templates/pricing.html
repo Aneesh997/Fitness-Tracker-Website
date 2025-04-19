@@ -51,10 +51,12 @@
                         <div class="main-menu f-right d-none d-lg-block">
                             <nav>
                                 <ul id="navigation">
-                                    <li><a href="{{ url_for('home') }}">Home</a></li>
-                                    <li><a href="{{ url_for('about') }}">About</a></li>
-                                    <li><a href="{{ url_for('courses') }}">Courses</a></li>
-                                    <li class="active"><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                    <ul id="navigation">
+                                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                                        <li><a href="{{ url_for('about') }}">About</a></li>
+                                        <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                        <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                        <li><a href="{{ url_for('tracking') }}">Tracking</a></li>
                                     
                                         
                                     </li>

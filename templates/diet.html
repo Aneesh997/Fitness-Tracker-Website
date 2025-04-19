@@ -1,0 +1,586 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Fitness App | Diet Tracker</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slicknav.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slick.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nice-select.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    
+    <!-- Chart.js for pie charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    
+    <style>
+        .dish-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .dish-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 250px;
+            margin: 0 auto;
+        }
+        .nutrition-facts {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .date-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!--? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader Start -->
+    
+    <header>
+        <!-- Header Start -->
+        <div class="header-area header-transparent">
+            <div class="main-header header-sticky">
+                <div class="container-fluid">
+                    <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                        <!-- Logo -->
+                        
+                        <!-- Main-menu -->
+                        <div class="main-menu f-right d-none d-lg-block">
+                            <nav>
+                                <ul id="navigation">
+                                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                                    <li><a href="{{ url_for('about') }}">About</a></li>
+                                    <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                    <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                    <li class="active"><a href="{{ url_for('tracking') }}">Tracker</a>
+                                        <ul class="submenu">
+                                            <li><a href="{{ url_for('sleep') }}">Sleep Analysis</a></li>
+                                            <li><a href="{{ url_for('diet') }}">Diet Tracker</a></li>
+                                            <li><a href="workout.html">Workout Plans</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                                </ul>
+                            </nav>
+                        </div>          
+                        <!-- Header-btn -->
+                        <div class="header-btns d-none d-lg-block f-right">
+                            {% if 'user' in session %}
+                                <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="btn">Login</a>
+                            {% endif %}
+                        </div>
+                       <!-- Mobile Menu -->
+                       <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+    </header>
+    
+    <main>
+        <!--? Hero Start -->
+        <div class="slider-area2">
+            <div class="slider-height2 d-flex align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="hero-cap hero-cap2 pt-70">
+                                <h2>Diet Tracker</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hero End -->
+        
+        <!-- Diet Tracker Section -->
+        <section class="sample-text-area">
+            <div class="container box_1170">
+                <div id="diet-tracker-app"></div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <!-- Footer Start-->
+        <div class="footer-area black-bg">
+            <div class="container">
+                <div class="footer-top footer-padding">
+                    <!-- Footer Menu -->
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="single-footer-caption mb-50 text-center">
+                                <!-- logo -->
+                                <div class="footer-logo wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                                   <!-- <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/logo/logo2_footer.png') }}" alt=""></a>-->
+                                </div>
+                                <!-- Menu -->
+                                <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                                    <div class="main-header main-header2">
+                                        <div class="menu-wrapper menu-wrapper2">
+                                            <!-- Main-menu -->
+                                            <div class="main-menu main-menu2 text-center">
+                                                <nav>
+                                                    <ul>
+                                                        <ul id="navigation">
+                                                            <li><a href="{{ url_for('home') }}">Home</a></li>
+                                                            <li><a href="{{ url_for('about') }}">About</a></li>
+                                                            <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                                            <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                                            <li><a href="{{ url_for('tracking') }}">Tracking</a></li>
+                                                        
+                                                        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- social -->
+                                <div class="footer-social mt-30 wow fadeInUp" data-wow-duration="3s" data-wow-delay=".8s">
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <!-- Footer End-->
+    </footer>
+    
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here -->
+    <script src="{{ url_for('static', filename='js/vendor/modernizr-3.5.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.slicknav.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slick.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/animated.headline.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.magnific-popup.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.form.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mail-script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.ajaxchimp.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- React Diet Tracker App -->
+    <script type="text/babel">
+        {% raw %}
+        function NutritionPieChart({ protein, carbs, fat }) {
+            const chartRef = React.useRef(null);
+            const chartInstance = React.useRef(null);
+            
+            React.useEffect(() => {
+                if (chartRef.current) {
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                    
+                    const ctx = chartRef.current.getContext('2d');
+                    chartInstance.current = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Protein', 'Carbs', 'Fat'],
+                            datasets: [{
+                                data: [protein, carbs, fat],
+                                backgroundColor: [
+                                    '#4e73df',
+                                    '#1cc88a',
+                                    '#f6c23e'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                }
+                
+                return () => {
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                };
+            }, [protein, carbs, fat]);
+            
+            return <canvas ref={chartRef} />;
+        }
+        
+        function DishItem({ dish, onAddToDiet }) {
+            const [expanded, setExpanded] = React.useState(false);
+            
+            return (
+                <div className="card mb-3">
+                    <div className="card-header d-flex justify-content-between align-items-center" 
+                         onClick={() => setExpanded(!expanded)}>
+                        <h5 className="mb-0">{dish.name}</h5>
+                        <div>
+                            <button 
+                                className="btn btn-sm btn-primary mr-2"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onAddToDiet(dish);
+                                }}
+                            >
+                                <i className="fas fa-plus"></i> Add
+                            </button>
+                            <i className={`fas fa-chevron-${expanded ? 'up' : 'down'}`}></i>
+                        </div>
+                    </div>
+                    {expanded && (
+                        <div className="card-body">
+                            <div className="row">
+                                <div className="col-md-4">
+                                    {dish.image && (
+                                        <img 
+                                            src={`/static/img/dishes/${dish.image}`}
+                                            className="img-fluid mb-3"
+                                            alt={dish.name}
+                                            style={{
+                                                maxHeight: '200px',
+                                                width: '100%',
+                                                objectFit: 'cover',
+                                                borderRadius: '8px'
+                                            }}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = '/static/img/placeholder.jpg';
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                                <div className="col-md-4">
+                                    <div className="chart-container" style={{height: '200px'}}>
+                                        <NutritionPieChart 
+                                            protein={dish.protein}
+                                            carbs={dish.carbs}
+                                            fat={dish.fat}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col-md-4">
+                                    <div className="nutrition-facts">
+                                        <h6>Nutrition Facts</h6>
+                                        <p><strong>Calories:</strong> {dish.calories} kcal</p>
+                                        <p><strong>Protein:</strong> {dish.protein}g</p>
+                                        <p><strong>Carbs:</strong> {dish.carbs}g</p>
+                                        <p><strong>Fat:</strong> {dish.fat}g</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+    
+        function DietEntry({ entry, onRemove }) {
+            return (
+                <tr>
+                    <td>{entry.dish_name}</td>
+                    <td>{entry.protein}g</td>
+                    <td>{entry.carbs}g</td>
+                    <td>{entry.fat}g</td>
+                    <td>{entry.calories} kcal</td>
+                    <td>
+                        <button 
+                            className="btn btn-sm btn-danger"
+                            onClick={() => onRemove(entry.id)}
+                        >
+                            <i className="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            );
+        }
+    
+        function DietTracker() {
+            const [dishes, setDishes] = React.useState([]);
+            const [dietEntries, setDietEntries] = React.useState([]);
+            const [currentDate, setCurrentDate] = React.useState(new Date().toISOString().split('T')[0]);
+            const [isLoading, setIsLoading] = React.useState(false);
+            const [message, setMessage] = React.useState(null);
+            
+            const fetchDishes = async () => {
+                setIsLoading(true);
+                try {
+                    const response = await fetch('/api/dishes');
+                    const data = await response.json();
+                    if (data.success) {
+                        setDishes(data.dishes);
+                    } else {
+                        setMessage({text: data.message || 'Failed to fetch dishes', type: 'error'});
+                    }
+                } catch (error) {
+                    setMessage({text: 'Failed to fetch dishes: ' + error.message, type: 'error'});
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            const fetchDietData = async () => {
+                setIsLoading(true);
+                try {
+                    const response = await fetch(`/api/diet?date=${currentDate}`, {
+                        credentials: 'include'
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        setDietEntries(data.data);
+                    } else {
+                        setMessage({text: data.message || 'Failed to fetch diet data', type: 'error'});
+                    }
+                } catch (error) {
+                    setMessage({text: 'Failed to fetch diet data: ' + error.message, type: 'error'});
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            const addToDiet = async (dish) => {
+                setIsLoading(true);
+                try {
+                    const response = await fetch('/api/diet', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            dish_name: dish.name,
+                            protein: dish.protein,
+                            carbs: dish.carbs,
+                            calories: dish.calories,
+                            fat: dish.fat,
+                            date: currentDate
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        setMessage({text: 'Dish added to your diet!', type: 'success'});
+                        fetchDietData();
+                    } else {
+                        setMessage({text: data.message || 'Failed to add dish', type: 'error'});
+                    }
+                } catch (error) {
+                    setMessage({text: 'Failed to add dish: ' + error.message, type: 'error'});
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            const removeFromDiet = async (id) => {
+                setIsLoading(true);
+                try {
+                    const response = await fetch(`/api/diet/${id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        setMessage({text: 'Entry removed successfully', type: 'success'});
+                        fetchDietData();
+                    } else {
+                        setMessage({text: data.message || 'Failed to remove entry', type: 'error'});
+                    }
+                } catch (error) {
+                    setMessage({text: 'Failed to remove entry: ' + error.message, type: 'error'});
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            const navigateDate = (days) => {
+                const date = new Date(currentDate);
+                date.setDate(date.getDate() + days);
+                setCurrentDate(date.toISOString().split('T')[0]);
+            };
+            
+            React.useEffect(() => {
+                fetchDishes();
+                fetchDietData();
+            }, [currentDate]);
+            
+            const getTotalNutrition = () => {
+                return dietEntries.reduce((acc, entry) => {
+                    acc.protein += parseFloat(entry.protein) || 0;
+                    acc.carbs += parseFloat(entry.carbs) || 0;
+                    acc.fat += parseFloat(entry.fat) || 0;
+                    acc.calories += parseFloat(entry.calories) || 0;
+                    return acc;
+                }, { protein: 0, carbs: 0, fat: 0, calories: 0 });
+            };
+            
+            const total = getTotalNutrition();
+            
+            return (
+                <div className="diet-tracker-container">
+                    <div className="date-navigation mb-4">
+                        <button 
+                            className="btn btn-secondary"
+                            onClick={() => navigateDate(-1)}
+                        >
+                            <i className="fas fa-chevron-left"></i> Previous Day
+                        </button>
+                        <h4 className="d-inline-block mx-3">{new Date(currentDate).toDateString()}</h4>
+                        <button 
+                            className="btn btn-secondary"
+                            onClick={() => navigateDate(1)}
+                            disabled={currentDate >= new Date().toISOString().split('T')[0]}
+                        >
+                            Next Day <i className="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    {message && (
+                        <div className={`alert alert-${message.type === 'error' ? 'danger' : message.type === 'success' ? 'success' : 'warning'}`}>
+                            {message.text}
+                            <button 
+                                type="button" 
+                                className="close" 
+                                onClick={() => setMessage(null)}
+                                style={{float: 'right'}}
+                            >
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                    )}
+                    
+                    <div className="row">
+                        <div className="col-md-8">
+                            <h4 className="mb-3">Available Dishes</h4>
+                            {isLoading && dishes.length === 0 ? (
+                                <div className="text-center py-4">
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="dishes-list">
+                                    {dishes.map(dish => (
+                                        <DishItem 
+                                            key={dish.name} 
+                                            dish={dish} 
+                                            onAddToDiet={addToDiet}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="col-md-4">
+                            <div className="card mb-4">
+                                <div className="card-body">
+                                    <h5 className="card-title">Daily Summary</h5>
+                                    <div className="chart-container" style={{height: '200px'}}>
+                                        <NutritionPieChart 
+                                            protein={total.protein}
+                                            carbs={total.carbs}
+                                            fat={total.fat}
+                                        />
+                                    </div>
+                                    <div className="nutrition-facts mt-3">
+                                        <p><strong>Total Calories:</strong> {total.calories.toFixed(1)} kcal</p>
+                                        <p><strong>Protein:</strong> {total.protein.toFixed(1)}g</p>
+                                        <p><strong>Carbs:</strong> {total.carbs.toFixed(1)}g</p>
+                                        <p><strong>Fat:</strong> {total.fat.toFixed(1)}g</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h5 className="mb-3">Today's Meals</h5>
+                            {dietEntries.length > 0 ? (
+                                <div className="table-responsive">
+                                    <table className="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Dish</th>
+                                                <th>Protein</th>
+                                                <th>Carbs</th>
+                                                <th>Fat</th>
+                                                <th>Calories</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {dietEntries.map(entry => (
+                                                <DietEntry 
+                                                    key={entry.id} 
+                                                    entry={entry} 
+                                                    onRemove={removeFromDiet}
+                                                />
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="alert alert-info">
+                                    No diet entries for this day. Add dishes to track your nutrition.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        ReactDOM.render(<DietTracker />, document.getElementById('diet-tracker-app'));
+        {% endraw %}
+    </script>
+</body>
+</html>

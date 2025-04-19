@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 import mysql.connector
 from mysql.connector import Error
+from datetime import datetime  # Added this import
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Change this to a secure random key in production
+app.secret_key = 'your_secret_key_here'
 
-# Database connection function
 def create_connection():
     return mysql.connector.connect(
         host="localhost",
@@ -14,24 +14,20 @@ def create_connection():
         database="user_db"
     )
 
-# Home route - redirects to login if not authenticated
 @app.route('/')
 def index():
     if 'user' in session:
         return redirect(url_for('home'))
     return render_template('login.html')
 
-# Login route - handles both GET and POST
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Handle AJAX login request
         if request.is_json:
             data = request.get_json()
             username = data.get('username')
             password = data.get('password')
         else:
-            # Handle form submission
             username = request.form.get('username')
             password = request.form.get('password')
 
@@ -61,7 +57,6 @@ def login():
                 else:
                     return render_template('login.html', error='Incorrect username or password')
         except Error as e:
-            print(f"Database error: {e}")
             if request.is_json:
                 return jsonify({
                     'success': False,
@@ -73,12 +68,10 @@ def login():
             cursor.close()
             conn.close()
     else:
-        # GET request - show login page
         if 'user' in session:
             return redirect(url_for('home'))
         return render_template('login.html')
 
-# Registration route
 @app.route('/register', methods=['POST'])
 def register():
     if request.is_json:
@@ -93,7 +86,6 @@ def register():
     cursor = conn.cursor()
 
     try:
-        # Check if username exists
         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
         if cursor.fetchone():
             if request.is_json:
@@ -104,7 +96,6 @@ def register():
             else:
                 return render_template('login.html', error='Username already exists')
 
-        # Insert new user
         cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
         conn.commit()
 
@@ -117,7 +108,6 @@ def register():
             session['user'] = username
             return redirect(url_for('home'))
     except Error as e:
-        print(f"Database error: {e}")
         conn.rollback()
         if request.is_json:
             return jsonify({
@@ -130,19 +120,16 @@ def register():
         cursor.close()
         conn.close()
 
-# Home page route (protected)
 @app.route('/home')
 def home():
     if 'user' not in session:
         return redirect(url_for('login'))
     return render_template('index.html', username=session['user'])
 
-# Logout route
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
 
 @app.route('/about')
 def about():
@@ -186,26 +173,222 @@ def elements():
         return redirect(url_for('login'))
     return render_template('elements.html', username=session.get('user'))
 
+@app.route('/tracking')
+def tracking():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template('tracking.html', username=session.get('user'))
+
+@app.route('/sleep')
+def sleep():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template('sleep.html', username=session.get('user'))
+
+@app.route('/api/sleep', methods=['POST'])
+def save_sleep_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    data = request.get_json()
+    username = session['user']
+    total_sleep = data['total_sleep']
+    deep_sleep = data['deep_sleep']
+    normal_sleep = data['normal_sleep']
+    light_sleep = data['light_sleep']
+    awake_time = data['awake_time']
+    date = data.get('date')  # Optional date parameter
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO sleep_data 
+            (username, total_sleep, deep_sleep, normal_sleep, light_sleep, awake_time, date) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (username, total_sleep, deep_sleep, normal_sleep, light_sleep, awake_time, date))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Sleep data saved successfully'})
+    except Error as e:
+        conn.rollback()
+        return jsonify({'success': False, 'message': 'Error saving sleep data'}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/sleep', methods=['GET'])
+def get_sleep_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT * FROM sleep_data 
+            WHERE username = %s 
+            ORDER BY date DESC, id DESC
+        """, (username,))
+        sleep_data = cursor.fetchall()
+        return jsonify({'success': True, 'data': sleep_data})
+    except Error as e:
+        return jsonify({'success': False, 'message': 'Error fetching sleep data'}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
 @app.route('/contact_submit', methods=['POST'])
 def contact_submit():
     if 'user' not in session:
         return redirect(url_for('login'))
     
-    # Get form data
     name = request.form.get('name')
     email = request.form.get('email')
     subject = request.form.get('subject')
     message = request.form.get('message')
     
-    # Here you would typically:
-    # 1. Validate the form data
-    # 2. Save to database or send email
-    # 3. Return a response
-    
-    # For now, we'll just print the data and redirect
-    print(f"Contact form submitted: {name}, {email}, {subject}, {message}")
     flash('Your message has been sent successfully!', 'success')
     return redirect(url_for('contact'))
+
+# ... (keep all your existing routes until the diet section) ...
+
+@app.route('/diet')
+def diet():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template('diet.html', username=session.get('user'))
+
+@app.route('/api/diet', methods=['POST'])
+def save_diet_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    data = request.get_json()
+    username = session['user']
+    dish_name = data['dish_name']
+    protein = data['protein']
+    carbs = data['carbs']
+    calories = data['calories']
+    fat = data['fat']
+    date = data.get('date') or datetime.now().strftime('%Y-%m-%d')
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO diet_data 
+            (username, dish_name, protein, carbs, calories, fat, date) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (username, dish_name, protein, carbs, calories, fat, date))
+        conn.commit()
+        return jsonify({
+            'success': True, 
+            'message': 'Diet data saved successfully',
+            'id': cursor.lastrowid
+        })
+    except Error as e:
+        conn.rollback()
+        return jsonify({
+            'success': False, 
+            'message': f'Error saving diet data: {str(e)}'
+        }), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/diet', methods=['GET'])
+def get_diet_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    date = request.args.get('date', datetime.now().strftime('%Y-%m-%d'))
+    
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT id, dish_name, protein, carbs, fat, calories, date 
+            FROM diet_data 
+            WHERE username = %s AND date = %s
+            ORDER BY id DESC
+        """, (username, date))
+        diet_data = cursor.fetchall()
+        return jsonify({'success': True, 'data': diet_data})
+    except Error as e:
+        return jsonify({
+            'success': False, 
+            'message': f'Error fetching diet data: {str(e)}'
+        }), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/diet/<int:id>', methods=['DELETE'])
+def delete_diet_entry(id):
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        # First verify the entry belongs to the user
+        cursor.execute("""
+            DELETE FROM diet_data 
+            WHERE id = %s AND username = %s
+        """, (id, username))
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            return jsonify({
+                'success': False, 
+                'message': 'Entry not found or not owned by user'
+            }), 404
+            
+        return jsonify({
+            'success': True, 
+            'message': 'Diet entry deleted successfully'
+        })
+    except Error as e:
+        conn.rollback()
+        return jsonify({
+            'success': False, 
+            'message': f'Error deleting diet entry: {str(e)}'
+        }), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/dishes', methods=['GET'])
+def get_dishes():
+    try:
+        dishes = [
+            {"name": "Grilled Chicken", "protein": 31, "carbs": 0, "calories": 165, "fat": 3.6, "image": "Grilled Chicken.jpg"},
+            {"name": "Salmon Fillet", "protein": 25, "carbs": 0, "calories": 206, "fat": 13, "image": "Salmon Fillet.jpg"},
+            {"name": "Vegetable Stir Fry", "protein": 4, "carbs": 12, "calories": 120, "fat": 7, "image": "Vegitable Stir Fry.png"},
+            {"name": "Greek Yogurt", "protein": 10, "carbs": 9, "calories": 100, "fat": 0.4, "image": "Greek Yogurt.jpg"},
+            {"name": "Oatmeal", "protein": 5, "carbs": 27, "calories": 150, "fat": 2.5, "image": "Oatmeal.jpg"},
+            {"name": "Quinoa Salad", "protein": 8, "carbs": 39, "calories": 222, "fat": 4, "image": "Quinoa Salad.jpg"},
+            {"name": "Avocado Toast", "protein": 4, "carbs": 25, "calories": 220, "fat": 15, "image": "Avocado Toast.jpg"},
+            {"name": "Egg White Omelette", "protein": 18, "carbs": 2, "calories": 100, "fat": 4, "image": "Egg White Omelette.jpg"},
+            {"name": "Sweet Potato", "protein": 2, "carbs": 27, "calories": 114, "fat": 0.1, "image": "Sweet Potato.jpeg"},
+            {"name": "Tuna Salad", "protein": 29, "carbs": 5, "calories": 179, "fat": 6, "image": "Tuna Salad.jpg"},
+            {"name": "Brown Rice", "protein": 5, "carbs": 45, "calories": 215, "fat": 1.8, "image": "Brown Rice.jpg"},
+            {"name": "Protein Shake", "protein": 24, "carbs": 8, "calories": 160, "fat": 2, "image": "Protein Shake.jpg"}
+        ]
+        return jsonify({'success': True, 'dishes': dishes})
+    except Exception as e:
+        return jsonify({
+            'success': False, 
+            'message': f'Error fetching dishes: {str(e)}'
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

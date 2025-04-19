@@ -1,0 +1,569 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Fitness App | Sleep Analysis</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slicknav.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slick.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nice-select.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    
+    <!-- React CDN (using React 17 for compatibility) -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    
+    <!-- Required jQuery for other plugins -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
+    
+    <style>
+        /* Additional styles for sleep analysis */
+        .sleep-analysis-container {
+            background: #f9f9ff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        .sleep-result-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        .sleep-result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .sleep-stage {
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+        .time-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2d2d2d;
+        }
+        .progress-bar.deep-sleep { background-color: #4e73df; }
+        .progress-bar.normal-sleep { background-color: #1cc88a; }
+        .progress-bar.light-sleep { background-color: #36b9cc; }
+        .progress-bar.awake-time { background-color: #f6c23e; }
+        .input-group-text {
+            background-color: #4e73df;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!--? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader Start -->
+    
+    <header>
+        <!-- Header Start -->
+        <div class="header-area header-transparent">
+            <div class="main-header header-sticky">
+                <div class="container-fluid">
+                    <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                        <!-- Logo -->
+                        
+                        <!-- Main-menu -->
+                        <div class="main-menu f-right d-none d-lg-block">
+                            <nav>
+                                <ul id="navigation">
+                                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                                    <li><a href="{{ url_for('about') }}">About</a></li>
+                                    <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                    <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                    <li class="active"><a href="{{ url_for('tracking') }}">Tracker</a>
+                                        <ul class="submenu">
+                                            <li><a href="{{ url_for('sleep') }}">Sleep Analysis</a></li>
+                                            <li><a href="{{ url_for('diet') }}">Diet Tracker</a></li>
+                                            <li><a href="workout.html">Workout Plans</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                                </ul>
+                            </nav>
+                        </div>          
+                        <!-- Header-btn -->
+                        <div class="header-btns d-none d-lg-block f-right">
+                            {% if 'user' in session %}
+                                <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="btn">Login</a>
+                            {% endif %}
+                        </div>
+                       <!-- Mobile Menu -->
+                       <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+    </header>
+    
+    <main>
+        <!--? Hero Start -->
+        <div class="slider-area2">
+            <div class="slider-height2 d-flex align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="hero-cap hero-cap2 pt-70">
+                                <h2>Sleep Analysis</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hero End -->
+        
+        <!-- Sleep Analysis Section -->
+        <section class="sample-text-area">
+            <div class="container box_1170">
+                <!-- React App Container -->
+                <div id="sleep-analysis-app">
+                    <!-- Loading placeholder -->
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading sleep analyzer...</span>
+                        </div>
+                    </div>
+                </div>
+                
+               
+                    <div class="container box_1170">
+                        <div class="section-top-border">
+                            
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <img src="assets/img/elements/d.jpg" alt="" class="img-fluid">
+                                </div>
+                <div class="col-md-3">
+                    <img src="assets/img/elements/d.jpg" alt="" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        <div class="section-top-border">
+            <h3 class="mb-30">Definition</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="single-defination">
+                        <h4 class="mb-20">Deep Sleep</h4>
+                        <p>Deep sleep is the most restful stage. Your body fully relaxes, breathing slows, and it's hard to wake up. This is when muscles repair, growth happens, and energy is restored. It helps with memory and health. Without deep sleep, you feel tired even after a full night’s sleep.
+
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="single-defination">
+                        <h4 class="mb-20">Normal Sleep</h4>
+                        <p>Normal sleep is a healthy mix of light sleep, deep sleep, and REM sleep. Your brain and body cycle through these stages multiple times at night. This helps you feel fresh, improves memory, and supports your body’s healing. Each stage is important for full rest and brain function.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="single-defination">
+                        <h4 class="mb-20">Light Sleep</h4>
+                        <p>Light sleep is the first stage of the sleep cycle. Your body starts to relax, and heart rate slows. You can wake up easily in this stage. It prepares your body to enter deeper sleep. Though not very restorative alone, it's important for a smooth transition into deeper sleep stages.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-top-border">
+            <h3 class="mb-30">To Be Noted</h3>
+            <div class="row">
+                <div class="col-lg-12">
+                    <blockquote class="generic-blockquote">
+                        “In recent studies, researchers discovered that people who get less than six hours of sleep consistently face higher risks of heart disease and weakened immunity. Surprisingly, even with this knowledge, millions still sacrifice rest for work or screens. However, new health apps now track sleep and promote better sleep habits.”
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+        
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+        </section>
+    </main>
+
+    
+    <footer>
+        <!-- Footer Start-->
+        <div class="footer-area black-bg">
+            <div class="container">
+                <div class="footer-top footer-padding">
+                    <!-- Footer Menu -->
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="single-footer-caption mb-50 text-center">
+                                <!-- logo -->
+                                <div class="footer-logo wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                                   <!-- <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/logo/logo2_footer.png') }}" alt=""></a>-->
+                                </div>
+                                <!-- Menu -->
+                                <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                                    <div class="main-header main-header2">
+                                        <div class="menu-wrapper menu-wrapper2">
+                                            <!-- Main-menu -->
+                                            <div class="main-menu main-menu2 text-center">
+                                                <nav>
+                                                    <ul>
+                                                        <ul id="navigation">
+                                                            <li><a href="{{ url_for('home') }}">Home</a></li>
+                                                            <li><a href="{{ url_for('about') }}">About</a></li>
+                                                            <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                                            <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                                            <li><a href="{{ url_for('tracking') }}">Tracking</a></li>
+                                                        
+                                                        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                                                    </ul>
+                                                </nav>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- social -->
+                                <div class="footer-social mt-30 wow fadeInUp" data-wow-duration="3s" data-wow-delay=".8s">
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <!-- Footer End-->
+    </footer>
+    
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here -->
+    <script src="{{ url_for('static', filename='js/vendor/modernizr-3.5.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.slicknav.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slick.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/animated.headline.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.nice-select.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.magnific-popup.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.form.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mail-script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.ajaxchimp.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- React Sleep Analysis App -->
+    <script type="text/babel">
+        {% raw %}
+        // Function to convert minutes to HH:MM format
+        function minutesToHHMM(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+        }
+        
+        // Function to convert HH:MM to minutes
+        function HHMMToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+        
+        // SleepAnalysis component
+        function SleepAnalysis() {
+            // State for sleep input and results
+            const [sleepTime, setSleepTime] = React.useState('08:00');
+            const [results, setResults] = React.useState(null);
+            const [sleepHistory, setSleepHistory] = React.useState([]);
+            const [isLoading, setIsLoading] = React.useState(false);
+            const [message, setMessage] = React.useState(null);
+            
+            // Fetch sleep history on component mount
+            React.useEffect(() => {
+                fetchSleepHistory();
+            }, []);
+            
+            // Fetch sleep history from server
+            const fetchSleepHistory = async () => {
+                setIsLoading(true);
+                try {
+                    const response = await fetch('/api/sleep', {
+                        credentials: 'include'
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        setSleepHistory(data.data);
+                    } else {
+                        setMessage({text: data.message, type: 'error'});
+                    }
+                } catch (error) {
+                    setMessage({text: 'Failed to fetch sleep history', type: 'error'});
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            // Save sleep data to server
+            const saveSleepData = async () => {
+                if (!results) return;
+                
+                setIsLoading(true);
+                try {
+                    const response = await fetch('/api/sleep', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            total_sleep: sleepTime,
+                            deep_sleep: results.deepSleep,
+                            normal_sleep: results.normalSleep,
+                            light_sleep: results.lightSleep,
+                            awake_time: results.awake,
+                            date: new Date().toISOString().split('T')[0]
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        setMessage({text: 'Sleep data saved successfully!', type: 'success'});
+                        fetchSleepHistory();
+                    } else {
+                        setMessage({text: data.message, type: 'error'});
+                    }
+                } catch (error) {
+                    setMessage({text: 'Failed to save sleep data', type: 'error'});
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            // Calculate sleep stages
+            const calculateSleepStages = () => {
+                const totalMinutes = HHMMToMinutes(sleepTime);
+                
+                const deepSleepMinutes = Math.round(totalMinutes * 0.25);
+                const normalSleepMinutes = Math.round(totalMinutes * 0.50);
+                const lightSleepMinutes = Math.round(totalMinutes * 0.20);
+                const awakeMinutes = Math.round(totalMinutes * 0.05);
+                
+                setResults({
+                    deepSleep: minutesToHHMM(deepSleepMinutes),
+                    normalSleep: minutesToHHMM(normalSleepMinutes),
+                    lightSleep: minutesToHHMM(lightSleepMinutes),
+                    awake: minutesToHHMM(awakeMinutes),
+                    percentages: {
+                        deepSleep: 25,
+                        normalSleep: 50,
+                        lightSleep: 20,
+                        awake: 5
+                    }
+                });
+            };
+            
+            // Calculate on initial render and when sleepTime changes
+            React.useEffect(() => {
+                calculateSleepStages();
+            }, [sleepTime]);
+            
+            // Handle input change
+            const handleChange = (e) => {
+                setSleepTime(e.target.value);
+            };
+            
+            return (
+                <div className="sleep-analysis-container">
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <div className="section-tittle text-center mb-80">
+                                <h1>Track Your Sleep Patterns</h1>
+                                <p>Enter your total sleep time to analyze your sleep stages</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {message && (
+                        <div className={`alert alert-${message.type === 'error' ? 'danger' : 'success'}`}>
+                            {message.text}
+                        </div>
+                    )}
+                    
+                    <div className="row justify-content-center">
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label htmlFor="sleepTime" className="mb-2">Total Sleep Time (HH:MM)</label>
+                                <div className="input-group">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text"><i className="fas fa-bed"></i></span>
+                                    </div>
+                                    <input 
+                                        type="time" 
+                                        className="form-control" 
+                                        id="sleepTime" 
+                                        value={sleepTime}
+                                        onChange={handleChange}
+                                        step="300"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {results && (
+                        <React.Fragment>
+                            <div className="row mt-5">
+                                <div className="col-md-6">
+                                    <div className="sleep-result-card">
+                                        <h4 className="sleep-stage">Deep Sleep</h4>
+                                        <div className="time-display">{results.deepSleep}</div>
+                                        <p>Essential for physical recovery</p>
+                                        <div className="progress">
+                                            <div className="progress-bar deep-sleep" style={{width: '25%'}}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <div className="sleep-result-card">
+                                        <h4 className="sleep-stage">Normal Sleep</h4>
+                                        <div className="time-display">{results.normalSleep}</div>
+                                        <p>Most of your night's sleep</p>
+                                        <div className="progress">
+                                            <div className="progress-bar normal-sleep" style={{width: '50%'}}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <div className="sleep-result-card">
+                                        <h4 className="sleep-stage">Light Sleep</h4>
+                                        <div className="time-display">{results.lightSleep}</div>
+                                        <p>Transitional sleep phase</p>
+                                        <div className="progress">
+                                            <div className="progress-bar light-sleep" style={{width: '20%'}}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <div className="sleep-result-card">
+                                        <h4 className="sleep-stage">Awake Time</h4>
+                                        <div className="time-display">{results.awake}</div>
+                                        <p>Brief awakenings</p>
+                                        <div className="progress">
+                                            <div className="progress-bar awake-time" style={{width: '5%'}}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="row mt-3">
+                                <div className="col-12 text-center">
+                                    <button 
+                                        onClick={saveSleepData} 
+                                        className="btn btn-primary"
+                                        disabled={isLoading}
+                                    >
+                                        {isLoading ? (
+                                            <React.Fragment>
+                                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                Saving...
+                                            </React.Fragment>
+                                        ) : 'Save Sleep Data'}
+                                    </button>
+                                </div>
+                            </div>
+                        </React.Fragment>
+                    )}
+                    
+                    <div className="row mt-5">
+                        <div className="col-12">
+                            <h3 className="mb-4">Your Sleep History</h3>
+                            {isLoading && sleepHistory.length === 0 ? (
+                                <div className="text-center py-4">
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            ) : sleepHistory.length > 0 ? (
+                                <div className="table-responsive">
+                                    <table className="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Total</th>
+                                                <th>Deep</th>
+                                                <th>Normal</th>
+                                                <th>Light</th>
+                                                <th>Awake</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {sleepHistory.map((record, index) => (
+                                                <tr key={index}>
+                                                    <td>{record.date || 'N/A'}</td>
+                                                    <td>{record.total_sleep}</td>
+                                                    <td>{record.deep_sleep}</td>
+                                                    <td>{record.normal_sleep}</td>
+                                                    <td>{record.light_sleep}</td>
+                                                    <td>{record.awake_time}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="alert alert-info">
+                                    No sleep records found. Save your first analysis to see history here.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Render the component
+        ReactDOM.render(<SleepAnalysis />, document.getElementById('sleep-analysis-app'));
+        {% endraw %}
+    </script>
+</body>
+</html>

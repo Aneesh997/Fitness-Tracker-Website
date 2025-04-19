@@ -1,0 +1,277 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Gym trainer | Template </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slicknav.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slick.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nice-select.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+</head>
+<body>
+    <!--? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                
+            </div>
+        </div>
+    </div>
+    <!-- Preloader Start -->
+    <header>
+        <!-- Header Start -->
+        <div class="header-area header-transparent">
+            <div class="main-header header-sticky">
+                <div class="container-fluid">
+                    <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                        <!-- Logo -->
+                        
+                        <!-- Main-menu -->
+                        <div class="main-menu f-right d-none d-lg-block">
+                            <nav>
+                                <ul id="navigation">
+                                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                                    <li><a href="{{ url_for('about') }}">About</a></li>
+                                    <li class="active"><a href="{{ url_for('courses') }}">Courses</a></li>
+                                    <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                    <li><a href="{{ url_for('tracking') }}">Tracker</a>
+                                        <ul class="submenu">
+                                            <li><a href="{{ url_for('sleep') }}">Sleep Anallysis</a></li>
+                                            <li><a href="{{ url_for('diet') }}">Diet Tracker</a></li>
+                                            <li><a href="workout.html">Workout Plans</a></li>
+                                        </ul>
+                                    </li>
+                                        
+                                    </li>
+                                    
+                                    
+                                    
+                                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                                </ul>
+                            </nav>
+                        </div>          
+                        <!-- Header-btn -->
+                        <div class="header-btns d-none d-lg-block f-right">
+                            {% if 'user' in session %}
+                                <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="btn">Login</a>
+                            {% endif %}
+                        </div>
+                       <!-- Mobile Menu -->
+                       <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+</header>
+<main>
+    <!--? Hero Start -->
+    <div class="slider-area2">
+        <div class="slider-height2 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap hero-cap2 pt-70">
+                            <h2>Tracker</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+    <section class="sample-text-area">
+        <div class="container box_1170">
+            <h3 class="text-heading">Text Sapmle</h3>
+            <p class="sample-text">
+                Welcome to your all-in-one health companion! Under our Tracker section, explore powerful tools designed just for you — Sleep Analysis, Diet Tracker, and Workout Plans. Whether you're chasing better rest, smarter meals, or killer workouts, our platform helps you track progress and stay on top of your fitness game!
+                
+            </p>
+        </div>
+    </section>
+    <!--? Start Align Area -->
+    <div class="whole-wrap">
+        <div class="container box_1170">
+            <div class="section-top-border">
+                <h3 class="mb-30">Sleep Analysis</h3>
+                <div class="row">
+                    <div class="col-md-3">
+                        <img src="assets/img/elements/d.jpg" alt="" class="img-fluid">
+                    </div>
+                    <div class="col-md-9 mt-sm-20">
+                        <p>Our Sleep Analysis tool gives you a deep understanding of your sleep quality every night. By tracking the total duration of your sleep and breaking it into different stages like light sleep, deep sleep, and REM, it helps you identify how well your body and mind are resting. You’ll get detailed graphs and insights showing when you were in each stage, how often you woke up, and how consistent your sleep patterns are. This data allows you to improve your bedtime routine, reduce stress, and boost your energy levels during the day. Whether you're struggling with falling asleep, waking up frequently, or just want to feel more rested, our Sleep Analysis tool gives you the clarity to take action. With better sleep, your mood, focus, and overall health get better too. It's not just about hours slept — it's about sleeping smarter, and we’re here to guide you every step.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section-top-border text-right">
+                <h3 class="mb-30">Diet Tracker</h3>
+                <div class="row">
+                    <div class="col-md-9">
+                        <p class="text-right">Our Diet Tracker is your daily companion for smart and simple nutrition tracking. You can add dishes you eat throughout the day, and for each dish, we provide detailed nutritional values — including calories, protein, fats, and carbohydrates. As you build your daily meals, the tracker instantly calculates your total intake, helping you stay aligned with your dietary goals. Whether you're aiming to lose weight, gain muscle, or just live healthier, our system keeps you informed about exactly what you're putting into your body. You can spot what’s missing or what you’re overdoing, and adjust your meals accordingly. No need for guesswork — the tracker does the math for you. With visual breakdowns and progress tracking, you’ll see how your eating habits evolve over time. Healthy living starts with awareness, and our Diet Tracker gives you the tools to take control of your nutrition and build a balanced lifestyle that works for you.</p>
+                    </div>
+                    <div class="col-md-3">
+                        <img src="assets/img/elements/d.jpg" alt="" class="img-fluid">
+                    </div>
+                </div>
+                
+            </div>
+            <div class="section-top-border">
+                <h3 class="mb-30">Workout Tracker</h3>
+                <div class="row">
+                    <div class="col-md-3">
+                        <img src="assets/img/elements/d.jpg" alt="" class="img-fluid">
+                    </div>
+                    <div class="col-md-9 mt-sm-20">
+                        <p>Our Workout Tracker helps you stay consistent, accountable, and motivated on your fitness journey. Log your workouts day by day, track sets, reps, weights, and time spent exercising — all in one place. Whether you're doing strength training, cardio, yoga, or home workouts, the tracker keeps a full history of your progress. You can see which muscle groups you’ve worked, how often you train, and how your performance improves over time. No more guessing what to do next — you’ll know exactly where you left off and how far you’ve come. The tracker also gives visual stats and weekly summaries to keep you pumped and on track with your goals. Whether you’re chasing gains, endurance, or general fitness, our Workout Tracker is your reliable fitness buddy, keeping you focused and consistent. It’s not just about working out — it’s about making every session count, and we’re here to track it with you.
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="section-top-border">
+                <h3 class="mb-30">Why It Matters </h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="single-defination">
+                            <h4 class="mb-20">Unlock the Power of Restful Sleep</h4>
+                            <p>Sleep Analysis helps you understand your sleep cycle by breaking it into light, deep, and REM stages. It shows how restful your sleep really is, helping you spot bad habits and improve your routine. Better sleep means better energy, focus, and overall health — and it starts with tracking.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="single-defination">
+                            <h4 class="mb-20">Fuel Your Body with Smart Nutrition</h4>
+                            <p>Our Diet Tracker lets you log meals and instantly see calories, protein, fats, and carbs. It helps you eat smarter by showing what your body is actually getting each day. Whether your goal is weight loss or muscle gain, tracking your diet keeps you focused, aware, and in control.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="single-defination">
+                            <h4 class="mb-20">Track Every Rep, See Real Results</h4>
+                            <p>Workout Tracker records your daily exercises, sets, reps, and progress. It helps you stay consistent, spot improvements, and make changes when needed. By keeping a clear history of your fitness journey, it pushes you to stay on track and keeps your goals within reach — one workout at a time.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="section-top-border">
+                <h3 class="mb-30">Quote of the day!</h3>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <blockquote class="generic-blockquote">
+                            "Your day starts the night before — track your sleep, fix your routine, and wake up recharged."
+– Atyul V Bhaskar
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+<footer>
+    <!--? Footer Start-->
+    <div class="footer-area black-bg">
+        <div class="container">
+            <div class="footer-top footer-padding">
+                <!-- Footer Menu -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="single-footer-caption mb-50 text-center">
+                            <!-- logo -->
+                            
+                            <!-- Menu -->
+                            <!-- Header Start -->
+                            <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                                <div class="main-header main-header2">
+                                    <div class="menu-wrapper menu-wrapper2">
+                                        <!-- Main-menu -->
+                                        <div class="main-menu main-menu2 text-center">
+                                            <nav>
+                                                <ul>
+                                                    <li><a href="index.html">Home</a></li>
+                                                    <li><a href="about.html">About</a></li>
+                                                    <li><a href="courses.html">Courses</a></li>
+                                                    <li><a href="pricing.html">Pricing</a></li>
+                                                    <li><a href="gallery.html">Gallery</a></li>
+                                                    <li><a href="contact.html">Contact</a></li>
+                                                </ul>
+                                            </nav>
+                                        </div>   
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Header End -->
+                            <!-- social -->
+                            <div class="footer-social mt-30 wow fadeInUp" data-wow-duration="3s" data-wow-delay=".8s">
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer Bottom -->
+            
+      <!-- Footer End-->
+  </footer>
+  <!-- Scroll Up -->
+  <div id="back-top" >
+    <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+</div>
+
+<!-- JS here -->
+
+<script src="{{ url_for('static', filename='js/vendor/modernizr-3.5.0.min.js') }}"></script>
+<!-- Jquery, Popper, Bootstrap -->
+<script src="{{ url_for('static', filename='js/vendor/jquery-1.12.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<!-- Jquery Mobile Menu -->
+<script src="{{ url_for('static', filename='js/jquery.slicknav.min.js') }}"></script>
+
+<!-- Jquery Slick , Owl-Carousel Plugins -->
+<script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/slick.min.js') }}"></script>
+<!-- One Page, Animated-HeadLin -->
+<script src="{{ url_for('static', filename='js/wow.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/animated.headline.js') }}"></script>
+
+<!-- Nice-select, sticky -->
+<script src="{{ url_for('static', filename='js/jquery.nice-select.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.magnific-popup.js') }}"></script>
+
+<!-- contact js -->
+<script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.form.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mail-script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.ajaxchimp.min.js') }}"></script>
+
+<!-- Jquery Plugins, main Jquery -->	
+<script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>
