@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Contact | FTP</title>
+    <title>Contact | FitTrack Pro</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
@@ -19,6 +19,51 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/slick.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/nice-select.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    
+    <style>
+        .flash-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+            animation: slideIn 0.5s forwards;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .contact-form input,
+        .contact-form textarea {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+        }
+        
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .boxed-btn {
+            background-color: #4e73df;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .boxed-btn:hover {
+            background-color: #2e59d9;
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body class="black-bg">
     <!--? Preloader Start -->
@@ -26,13 +71,25 @@
         <div class="preloader d-flex align-items-center justify-content-center">
             <div class="preloader-inner position-relative">
                 <div class="preloader-circle"></div>
-                <div class="preloader-img pere-text">
-                    <!--<img src="{{ url_for('static', filename='img/logo/loder.png') }}" alt=""-->
-                </div>
             </div>
         </div>
     </div>
     <!-- Preloader Start -->
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <header>
         <!-- Header Start -->
         <div class="header-area header-transparent">
@@ -40,9 +97,7 @@
                 <div class="container-fluid">
                     <div class="menu-wrapper d-flex align-items-center justify-content-between">
                         <!-- Logo -->
-                        <!--<div class="logo">
-                            <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/logo/logo.png') }}" alt=""></a>
-                        </div>-->
+                        
                         <!-- Main-menu -->
                         <div class="main-menu f-right d-none d-lg-block">
                             <nav>
@@ -51,9 +106,7 @@
                                     <li><a href="{{ url_for('about') }}">About</a></li>
                                     <li><a href="{{ url_for('courses') }}">Courses</a></li>
                                     <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
-                                    <li><a href="{{ url_for('tracking') }}">Tracking</a></li>
-                                    
-                                        
+                                    <li><a href="{{ url_for('tracking') }}">Tracker</a></li>
                                     <li class="active"><a href="{{ url_for('contact') }}">Contact</a></li>
                                 </ul>
                             </nav>
@@ -75,6 +128,7 @@
             </div>
         </div>
     </header>
+    
     <main>
         <!--? Hero Start -->
         <div class="slider-area2">
@@ -91,76 +145,40 @@
             </div>
         </div>
         <!-- Hero End -->
+        
         <!--?  Contact Area start  -->
         <section class="contact-section">
             <div class="container">
-                <script>
-                    function initMap() {
-                        var uluru = {
-                            lat: -25.363,
-                            lng: 131.044
-                        };
-                        var grayStyles = [{
-                            featureType: "all",
-                            stylers: [{
-                                saturation: -90
-                            },
-                            {
-                                lightness: 50
-                            }
-                            ]
-                        },
-                        {
-                            elementType: 'labels.text.fill',
-                            stylers: [{
-                                color: '#ccdee9'
-                            }]
-                        }
-                        ];
-                        var map = new google.maps.Map(document.getElementById('map'), {
-                            center: {
-                                lat: -31.197,
-                                lng: 150.744
-                            },
-                            zoom: 9,
-                            styles: grayStyles,
-                            scrollwheel: false
-                        });
-                    }
-                </script>
-                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpfS1oRGreGSBU5HHjMmQ3o5NLw7VdJ6I&amp;callback=initMap">
-                </script>
-                
                 <div class="row">
                     <div class="col-12">
                         <h2 class="contact-title">Get in Touch</h2>
                     </div>
                     <div class="col-lg-8">
-                        <form class="form-contact contact_form" action="{{ url_for('contact_submit') }}" method="post" id="contactForm" novalidate="novalidate">
+                        <form class="form-contact contact_form" action="{{ url_for('contact_submit') }}" method="post" id="contactForm">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder="Enter Message"></textarea>
+                                        <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" placeholder="Enter Message" required></textarea>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input class="form-control valid" name="name" id="name" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your name'" placeholder="Enter your name">
+                                        <input class="form-control" name="name" id="name" type="text" placeholder="Enter your name" required>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <input class="form-control valid" name="email" id="email" type="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'" placeholder="Email">
+                                        <input class="form-control" name="email" id="email" type="email" placeholder="Email" required>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <input class="form-control" name="subject" id="subject" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Subject'" placeholder="Enter Subject">
+                                        <input class="form-control" name="subject" id="subject" type="text" placeholder="Enter Subject" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group mt-3">
-                                <button type="submit" class="button button-contactForm boxed-btn">Send</button>
+                                <button type="submit" class="button button-contactForm boxed-btn">Send Message</button>
                             </div>
                         </form>
                     </div>
@@ -191,7 +209,8 @@
             </div>
         </section>
         <!-- Contact Area End -->
-        <!-- ? services-area -->
+        
+        <!--? services-area -->
         <section class="services-area">
             <div class="container">
                 <div class="row justify-content-between">
@@ -202,7 +221,7 @@
                             </div>
                             <div class="features-caption">
                                 <h3>Location</h3>
-                                <p>RV University, Bangalore Kanrnataka 560059</p>
+                                <p>RV University, Bangalore Karnataka 560059</p>
                             </div>
                         </div>
                     </div>
@@ -234,52 +253,58 @@
             </div>
         </section>
     </main>
+    
     <footer>
         <!--? Footer Start-->
-        <div class="footer-area black-bg">
-            <div class="container">
-                <div class="footer-top footer-padding">
-                    <!-- Footer Menu -->
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="single-footer-caption mb-50 text-center">
-                                <!-- logo -->
-                                <div class="footer-logo wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
-                                   <!-- <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/logo/logo2_footer.png') }}" alt=""></a>-->
-                                </div>
-                                <!-- Menu -->
-                                <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
-                                    <div class="main-header main-header2">
-                                        <div class="menu-wrapper menu-wrapper2">
-                                            <!-- Main-menu -->
-                                            <div class="main-menu main-menu2 text-center">
-                                                <nav>
-                                                    <ul>
-                                                        <ul id="navigation">
-                                                            <li><a href="{{ url_for('home') }}">Home</a></li>
-                                                            <li><a href="{{ url_for('about') }}">About</a></li>
-                                                            <li><a href="{{ url_for('courses') }}">Courses</a></li>
-                                                            <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
-                                                            <li><a href="{{ url_for('tracking') }}">Tracking</a></li>
-                                                        
-                                                        <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                                                    </ul>
-                                                </nav>
-                                            </div>   
-                                        </div>
+    <div class="footer-area black-bg">
+        <div class="container">
+            <div class="footer-top footer-padding">
+                <!-- Footer Menu -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="single-footer-caption mb-50 text-center">
+                            <!-- logo -->
+                            <div class="footer-logo wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                                <!--
+                                <a href="index.html"><img src="{{ url_for('static', filename='img/logo/logo2_footer.png') }}" alt=""></a>-->
+                            </div>
+                            <!-- Menu -->
+                            <!-- Header Start -->
+                            <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                                <div class="main-header main-header2">
+                                    <div class="menu-wrapper menu-wrapper2">
+                                        <!-- Main-menu -->
+                                        <div class="main-menu main-menu2 text-center">
+                                            <nav>
+                                                <ul>
+                                                <li><a href="{{ url_for('home') }}">Home</a></li>
+                                    <li><a href="{{ url_for('about') }}">About</a></li>
+                                    <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                    <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                    <li><a href="{{ url_for('tracking') }}">Tracking</a></li>               
+                                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                                                </ul>
+                                            </nav>
+                                        </div>   
                                     </div>
                                 </div>
-                                <!-- social -->
-                                <div class="footer-social mt-30 wow fadeInUp" data-wow-duration="3s" data-wow-delay=".8s">
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                    <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                                </div>
+                            </div>
+                            <!-- Header End -->
+                            <!-- social -->
+                            <div class="footer-social mt-30 wow fadeInUp" data-wow-duration="3s" data-wow-delay=".8s">
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+            </div>
+        </div>
+    </div>
+    <!-- Footer End-->
+</footer>
+    
     <!-- Scroll Up -->
     <div id="back-top">
         <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
@@ -305,5 +330,47 @@
     <script src="{{ url_for('static', filename='js/jquery.ajaxchimp.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <script>
+        // Auto-hide flash messages after 5 seconds
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('.flash-message').fadeOut('slow');
+            }, 5000);
+            
+            // Form validation
+            $("#contactForm").validate({
+                rules: {
+                    name: "required",
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    subject: "required",
+                    message: "required"
+                },
+                messages: {
+                    name: "Please enter your name",
+                    email: {
+                        required: "Please enter your email",
+                        email: "Please enter a valid email address"
+                    },
+                    subject: "Please enter a subject",
+                    message: "Please enter your message"
+                },
+                errorElement: "div",
+                errorPlacement: function(error, element) {
+                    error.addClass("invalid-feedback");
+                    error.insertAfter(element);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass("is-invalid").addClass("is-valid");
+                }
+            });
+        });
+    </script>
 </body>
 </html>

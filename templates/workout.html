@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Fitness App | Diet Tracker</title>
+    <title>Fitness App | Workout Tracker</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
     
-    <!-- Chart.js for pie charts -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- React CDN -->
@@ -30,14 +30,18 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     
     <style>
-        .dish-card {
+        .workout-card {
             cursor: pointer;
             transition: all 0.3s ease;
             margin-bottom: 20px;
         }
-        .dish-card:hover {
+        .workout-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .time-input {
+            max-width: 100px;
+            display: inline-block;
         }
         .chart-container {
             position: relative;
@@ -45,7 +49,7 @@
             width: 250px;
             margin: 0 auto;
         }
-        .nutrition-facts {
+        .workout-summary {
             background: #f9f9f9;
             padding: 15px;
             border-radius: 8px;
@@ -55,6 +59,12 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+        }
+        .workout-image {
+            height: 150px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -123,7 +133,7 @@
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="hero-cap hero-cap2 pt-70">
-                                <h2>Diet Tracker</h2>
+                                <h2>Workout Tracker</h2>
                             </div>
                         </div>
                     </div>
@@ -132,61 +142,61 @@
         </div>
         <!-- Hero End -->
         
-        <!-- Diet Tracker Section -->
+        <!-- Workout Tracker Section -->
         <section class="sample-text-area">
             <div class="container box_1170">
-                <div id="diet-tracker-app"></div>
+                <div id="workout-tracker-app"></div>
             </div>
         </section>
     </main>
     
     <footer>
-        <!-- Footer Start-->
-        <div class="footer-area black-bg">
-            <div class="container">
-                <div class="footer-top footer-padding">
-                    <!-- Footer Menu -->
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="single-footer-caption mb-50 text-center">
-                                <!-- logo -->
-                                <div class="footer-logo wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
-                                   <!-- <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='img/logo/logo2_footer.png') }}" alt=""></a>-->
-                                </div>
-                                <!-- Menu -->
-                                <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
-                                    <div class="main-header main-header2">
-                                        <div class="menu-wrapper menu-wrapper2">
-                                            <!-- Main-menu -->
-                                            <div class="main-menu main-menu2 text-center">
-                                                <nav>
-                                                    <ul>
-                                                        <ul id="navigation">
-                                                            <li><a href="{{ url_for('home') }}">Home</a></li>
-                                                            <li><a href="{{ url_for('about') }}">About</a></li>
-                                                            <li><a href="{{ url_for('courses') }}">Courses</a></li>
-                                                            <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
-                                                            <li><a href="{{ url_for('tracking') }}">Tracking</a></li>
-                                                        
-                                                        <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                                                    </ul>
-                                                </nav>
-                                            </div>   
-                                        </div>
+        <!--? Footer Start-->
+    <div class="footer-area black-bg">
+        <div class="container">
+            <div class="footer-top footer-padding">
+                <!-- Footer Menu -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="single-footer-caption mb-50 text-center">
+                            <!-- logo -->
+                            
+                            <!-- Menu -->
+                            <!-- Header Start -->
+                            <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
+                                <div class="main-header main-header2">
+                                    <div class="menu-wrapper menu-wrapper2">
+                                        <!-- Main-menu -->
+                                        <div class="main-menu main-menu2 text-center">
+                                            <nav>
+                                                <ul>
+                                                    <li><a href="index.html">Home</a></li>
+                                                    <li><a href="about.html">About</a></li>
+                                                    <li><a href="courses.html">Courses</a></li>
+                                                    <li><a href="pricing.html">Pricing</a></li>
+                                                    <li><a href="gallery.html">Gallery</a></li>
+                                                    <li><a href="contact.html">Contact</a></li>
+                                                </ul>
+                                            </nav>
+                                        </div>   
                                     </div>
                                 </div>
-                                <!-- social -->
-                                <div class="footer-social mt-30 wow fadeInUp" data-wow-duration="3s" data-wow-delay=".8s">
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                    <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                                </div>
+                            </div>
+                            <!-- Header End -->
+                            <!-- social -->
+                            <div class="footer-social mt-30 wow fadeInUp" data-wow-duration="3s" data-wow-delay=".8s">
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
-        <!-- Footer End-->
-    </footer>
+            </div>
+            <!-- Footer Bottom -->
+            
+      <!-- Footer End-->
+  </footer>
     
     <!-- Scroll Up -->
     <div id="back-top">
@@ -214,10 +224,10 @@
     <script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     
-    <!-- React Diet Tracker App -->
+    <!-- React Workout Tracker App -->
     <script type="text/babel">
         {% raw %}
-        function NutritionPieChart({ protein, carbs, fat }) {
+        function WorkoutPieChart({ workouts }) {
             const chartRef = React.useRef(null);
             const chartInstance = React.useRef(null);
             
@@ -228,23 +238,33 @@
                     }
                     
                     const ctx = chartRef.current.getContext('2d');
+                    
+                    // Prepare data for chart
+                    const labels = workouts.map(w => w.workout_name);
+                    const data = workouts.map(w => w.calories);
+                    const backgroundColors = [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                        '#FF9F40', '#8AC249', '#EA5F89', '#00BFFF', '#FFD700'
+                    ];
+                    
                     chartInstance.current = new Chart(ctx, {
-                        type: 'pie',
+                        type: 'doughnut',
                         data: {
-                            labels: ['Protein', 'Carbs', 'Fat'],
+                            labels: labels,
                             datasets: [{
-                                data: [protein, carbs, fat],
-                                backgroundColor: [
-                                    '#4e73df',
-                                    '#1cc88a',
-                                    '#f6c23e'
-                                ],
+                                data: data,
+                                backgroundColor: backgroundColors,
                                 borderWidth: 1
                             }]
                         },
                         options: {
                             responsive: true,
-                            maintainAspectRatio: false
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right'
+                                }
+                            }
                         }
                     });
                 }
@@ -254,71 +274,65 @@
                         chartInstance.current.destroy();
                     }
                 };
-            }, [protein, carbs, fat]);
+            }, [workouts]);
             
             return <canvas ref={chartRef} />;
         }
         
-        function DishItem({ dish, onAddToDiet }) {
+        function WorkoutPlan({ workout, onAddWorkout }) {
+            const [duration, setDuration] = React.useState(30);
             const [expanded, setExpanded] = React.useState(false);
             
+            const handleAddWorkout = () => {
+                const calories = Math.round(duration * workout.calories_per_min);
+                onAddWorkout(workout.id, workout.name, duration, calories);
+                setDuration(30);
+            };
+            
             return (
-                <div className="card mb-3">
+                <div className="card workout-card mb-3">
                     <div className="card-header d-flex justify-content-between align-items-center" 
                          onClick={() => setExpanded(!expanded)}>
-                        <h5 className="mb-0">{dish.name}</h5>
-                        <div>
-                            <button 
-                                className="btn btn-sm btn-primary mr-2"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onAddToDiet(dish);
-                                }}
-                            >
-                                <i className="fas fa-plus"></i> Add
-                            </button>
-                            <i className={`fas fa-chevron-${expanded ? 'up' : 'down'}`}></i>
-                        </div>
+                        <h5 className="mb-0">{workout.name}</h5>
+                        <i className={`fas fa-chevron-${expanded ? 'up' : 'down'}`}></i>
                     </div>
                     {expanded && (
                         <div className="card-body">
                             <div className="row">
                                 <div className="col-md-4">
-                                    {dish.image && (
-                                        <img 
-                                            src={`/static/img/dishes/${dish.image}`}
-                                            className="img-fluid mb-3"
-                                            alt={dish.name}
-                                            style={{
-                                                maxHeight: '200px',
-                                                width: '100%',
-                                                objectFit: 'cover',
-                                                borderRadius: '8px'
-                                            }}
-                                            onError={(e) => {
-                                                e.target.onerror = null;
-                                                e.target.src = '/static/img/placeholder.jpg';
-                                            }}
-                                        />
-                                    )}
+                                    <img 
+                                        src={`/static/img/workouts/${workout.image}`}
+                                        className="workout-image mb-3"
+                                        alt={workout.name}
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = '/static/img/placeholder.jpg';
+                                        }}
+                                    />
                                 </div>
                                 <div className="col-md-4">
-                                    <div className="chart-container" style={{height: '200px'}}>
-                                        <NutritionPieChart 
-                                            protein={dish.protein}
-                                            carbs={dish.carbs}
-                                            fat={dish.fat}
-                                        />
+                                    <div className="workout-summary">
+                                        <h6>Workout Details</h6>
+                                        <p><strong>Calories Burn:</strong> {workout.calories_per_min} kcal/min</p>
+                                        <div className="form-group mt-3">
+                                            <label>Duration (minutes):</label>
+                                            <input 
+                                                type="number" 
+                                                className="form-control time-input"
+                                                value={duration}
+                                                onChange={(e) => setDuration(Math.max(1, e.target.value))}
+                                                min="1"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="col-md-4">
-                                    <div className="nutrition-facts">
-                                        <h6>Nutrition Facts</h6>
-                                        <p><strong>Calories:</strong> {dish.calories} kcal</p>
-                                        <p><strong>Protein:</strong> {dish.protein}g</p>
-                                        <p><strong>Carbs:</strong> {dish.carbs}g</p>
-                                        <p><strong>Fat:</strong> {dish.fat}g</p>
-                                    </div>
+                                <div className="col-md-4 d-flex align-items-center justify-content-center">
+                                    <button 
+                                        className="btn btn-primary btn-lg"
+                                        onClick={handleAddWorkout}
+                                    >
+                                        Add Workout
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -327,13 +341,11 @@
             );
         }
     
-        function DietEntry({ entry, onRemove }) {
+        function WorkoutEntry({ entry, onRemove }) {
             return (
                 <tr>
-                    <td>{entry.dish_name}</td>
-                    <td>{entry.protein}g</td>
-                    <td>{entry.carbs}g</td>
-                    <td>{entry.fat}g</td>
+                    <td>{entry.workout_name}</td>
+                    <td>{entry.duration} mins</td>
                     <td>{entry.calories} kcal</td>
                     <td>
                         <button 
@@ -347,99 +359,98 @@
             );
         }
     
-        function DietTracker() {
-            const [dishes, setDishes] = React.useState([]);
-            const [dietEntries, setDietEntries] = React.useState([]);
+        function WorkoutTracker() {
+            const [workouts, setWorkouts] = React.useState([]);
+            const [workoutEntries, setWorkoutEntries] = React.useState([]);
             const [currentDate, setCurrentDate] = React.useState(new Date().toISOString().split('T')[0]);
             const [isLoading, setIsLoading] = React.useState(false);
             const [message, setMessage] = React.useState(null);
             
-            const fetchDishes = async () => {
+            const fetchWorkoutPlans = async () => {
                 setIsLoading(true);
                 try {
-                    const response = await fetch('/api/dishes');
+                    const response = await fetch('/api/workouts');
                     const data = await response.json();
                     if (data.success) {
-                        setDishes(data.dishes);
+                        setWorkouts(data.workouts);
                     } else {
-                        setMessage({text: data.message || 'Failed to fetch dishes', type: 'error'});
+                        setMessage({text: data.message || 'Failed to fetch workout plans', type: 'error'});
                     }
                 } catch (error) {
-                    setMessage({text: 'Failed to fetch dishes: ' + error.message, type: 'error'});
+                    setMessage({text: 'Failed to fetch workout plans: ' + error.message, type: 'error'});
                 } finally {
                     setIsLoading(false);
                 }
             };
             
-            const fetchDietData = async () => {
+            const fetchWorkoutData = async () => {
                 setIsLoading(true);
                 try {
-                    const response = await fetch(`/api/diet?date=${currentDate}`, {
+                    const response = await fetch(`/api/workout?date=${currentDate}`, {
                         credentials: 'include'
                     });
                     const data = await response.json();
                     if (data.success) {
-                        setDietEntries(data.data);
+                        setWorkoutEntries(data.data);
                     } else {
-                        setMessage({text: data.message || 'Failed to fetch diet data', type: 'error'});
+                        setMessage({text: data.message || 'Failed to fetch workout data', type: 'error'});
                     }
                 } catch (error) {
-                    setMessage({text: 'Failed to fetch diet data: ' + error.message, type: 'error'});
+                    setMessage({text: 'Failed to fetch workout data: ' + error.message, type: 'error'});
                 } finally {
                     setIsLoading(false);
                 }
             };
             
-            const addToDiet = async (dish) => {
+            const addWorkout = async (workoutId, workoutName, duration, calories) => {
                 setIsLoading(true);
                 try {
-                    const response = await fetch('/api/diet', {
+                    const response = await fetch('/api/workout', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         credentials: 'include',
                         body: JSON.stringify({
-                            dish_name: dish.name,
-                            protein: dish.protein,
-                            carbs: dish.carbs,
-                            calories: dish.calories,
-                            fat: dish.fat,
+                            workout_id: workoutId,
+                            workout_name: workoutName,
+                            duration: duration,
+                            calories: calories,
                             date: currentDate
                         })
                     });
                     
                     const data = await response.json();
                     if (data.success) {
-                        setMessage({text: 'Dish added to your diet!', type: 'success'});
-                        fetchDietData();
+                        setMessage({text: 'Workout added successfully!', type: 'success'});
+                        fetchWorkoutData();
                     } else {
-                        setMessage({text: data.message || 'Failed to add dish', type: 'error'});
+                        setMessage({text: data.message || 'Failed to add workout', type: 'error'});
                     }
                 } catch (error) {
-                    setMessage({text: 'Failed to add dish: ' + error.message, type: 'error'});
+                    setMessage({text: 'Failed to add workout: ' + error.message, type: 'error'});
                 } finally {
                     setIsLoading(false);
                 }
             };
             
-            const removeFromDiet = async (id) => {
+            const removeWorkout = async (id) => {
                 setIsLoading(true);
                 try {
-                    const response = await fetch(`/api/diet/${id}`, {
+                    const response = await fetch(`/api/workout/${id}`, {
                         method: 'DELETE',
                         credentials: 'include'
                     });
                     
                     const data = await response.json();
                     if (data.success) {
-                        setMessage({text: 'Entry removed successfully', type: 'success'});
-                        fetchDietData();
+                        setMessage({text: 'Workout removed successfully', type: 'success'});
+                        fetchWorkoutData();
                     } else {
-                        setMessage({text: data.message || 'Failed to remove entry', type: 'error'});
+                        setMessage({text: data.message || 'Failed to remove workout', type: 'error'});
                     }
                 } catch (error) {
-                    setMessage({text: 'Failed to remove entry: ' + error.message, type: 'error'});
+                    setMessage({text: 'Failed to remove workout: ' + error.message, type: 'error'});
                 } finally {
                     setIsLoading(false);
                 }
@@ -452,24 +463,20 @@
             };
             
             React.useEffect(() => {
-                fetchDishes();
-                fetchDietData();
+                fetchWorkoutPlans();
+                fetchWorkoutData();
             }, [currentDate]);
             
-            const getTotalNutrition = () => {
-                return dietEntries.reduce((acc, entry) => {
-                    acc.protein += parseFloat(entry.protein) || 0;
-                    acc.carbs += parseFloat(entry.carbs) || 0;
-                    acc.fat += parseFloat(entry.fat) || 0;
-                    acc.calories += parseFloat(entry.calories) || 0;
-                    return acc;
-                }, { protein: 0, carbs: 0, fat: 0, calories: 0 });
+            const getTotalCalories = () => {
+                return workoutEntries.reduce((total, entry) => {
+                    return total + (parseFloat(entry.calories) || 0);
+                }, 0);
             };
             
-            const total = getTotalNutrition();
+            const totalCalories = getTotalCalories();
             
             return (
-                <div className="diet-tracker-container">
+                <div className="workout-tracker-container">
                     <div className="date-navigation mb-4">
                         <button 
                             className="btn btn-secondary"
@@ -503,20 +510,20 @@
                     
                     <div className="row">
                         <div className="col-md-8">
-                            <h4 className="mb-3">Available Dishes</h4>
-                            {isLoading && dishes.length === 0 ? (
+                            <h4 className="mb-3">Available Workouts</h4>
+                            {isLoading && workouts.length === 0 ? (
                                 <div className="text-center py-4">
                                     <div className="spinner-border text-primary" role="status">
                                         <span className="sr-only">Loading...</span>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="dishes-list">
-                                    {dishes.map(dish => (
-                                        <DishItem 
-                                            key={dish.name} 
-                                            dish={dish} 
-                                            onAddToDiet={addToDiet}
+                                <div className="workouts-list">
+                                    {workouts.map(workout => (
+                                        <WorkoutPlan 
+                                            key={workout.id} 
+                                            workout={workout} 
+                                            onAddWorkout={addWorkout}
                                         />
                                     ))}
                                 </div>
@@ -527,42 +534,34 @@
                             <div className="card mb-4">
                                 <div className="card-body">
                                     <h5 className="card-title">Daily Summary</h5>
-                                    <div className="chart-container" style={{height: '200px'}}>
-                                        <NutritionPieChart 
-                                            protein={total.protein}
-                                            carbs={total.carbs}
-                                            fat={total.fat}
-                                        />
+                                    <div className="chart-container" style={{height: '250px'}}>
+                                        <WorkoutPieChart workouts={workoutEntries} />
                                     </div>
-                                    <div className="nutrition-facts mt-3">
-                                        <p><strong>Total Calories:</strong> {total.calories.toFixed(1)} kcal</p>
-                                        <p><strong>Protein:</strong> {total.protein.toFixed(1)}g</p>
-                                        <p><strong>Carbs:</strong> {total.carbs.toFixed(1)}g</p>
-                                        <p><strong>Fat:</strong> {total.fat.toFixed(1)}g</p>
+                                    <div className="workout-summary mt-3 text-center">
+                                        <h4>Total Calories Burned</h4>
+                                        <h2 className="text-primary">{totalCalories} kcal</h2>
                                     </div>
                                 </div>
                             </div>
                             
-                            <h5 className="mb-3">Today's Meals</h5>
-                            {dietEntries.length > 0 ? (
+                            <h5 className="mb-3">Today's Workouts</h5>
+                            {workoutEntries.length > 0 ? (
                                 <div className="table-responsive">
                                     <table className="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Dish</th>
-                                                <th>Protein</th>
-                                                <th>Carbs</th>
-                                                <th>Fat</th>
+                                                <th>Workout</th>
+                                                <th>Duration</th>
                                                 <th>Calories</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {dietEntries.map(entry => (
-                                                <DietEntry 
+                                            {workoutEntries.map(entry => (
+                                                <WorkoutEntry 
                                                     key={entry.id} 
                                                     entry={entry} 
-                                                    onRemove={removeFromDiet}
+                                                    onRemove={removeWorkout}
                                                 />
                                             ))}
                                         </tbody>
@@ -570,7 +569,7 @@
                                 </div>
                             ) : (
                                 <div className="alert alert-info">
-                                    No diet entries for this day. Add dishes to track your nutrition.
+                                    No workouts recorded for this day. Add workouts to track your progress.
                                 </div>
                             )}
                         </div>
@@ -579,7 +578,7 @@
             );
         }
         
-        ReactDOM.render(<DietTracker />, document.getElementById('diet-tracker-app'));
+        ReactDOM.render(<WorkoutTracker />, document.getElementById('workout-tracker-app'));
         {% endraw %}
     </script>
 </body>

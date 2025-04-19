@@ -52,7 +52,7 @@
                                         <ul class="submenu">
                                             <li><a href="{{ url_for('sleep') }}">Sleep Anallysis</a></li>
                                             <li><a href="{{ url_for('diet') }}">Diet Tracker</a></li>
-                                            <li><a href="workout.html">Workout Plans</a></li>
+                                            <li><a href="{{ url_for('workout') }}">Workout Plans</a></li>
                                         </ul>
                                     </li>
                                         
@@ -100,7 +100,7 @@
     <!-- Hero End -->
     <section class="sample-text-area">
         <div class="container box_1170">
-            <h3 class="text-heading">Text Sapmle</h3>
+            <h3 class="text-heading"></h3>
             <p class="sample-text">
                 Welcome to your all-in-one health companion! Under our Tracker section, explore powerful tools designed just for you — Sleep Analysis, Diet Tracker, and Workout Plans. Whether you're chasing better rest, smarter meals, or killer workouts, our platform helps you track progress and stay on top of your fitness game!
                 
@@ -198,7 +198,10 @@
                     <div class="col-xl-12">
                         <div class="single-footer-caption mb-50 text-center">
                             <!-- logo -->
-                            
+                            <div class="footer-logo wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                                <!--
+                                <a href="index.html"><img src="{{ url_for('static', filename='img/logo/logo2_footer.png') }}" alt=""></a>-->
+                            </div>
                             <!-- Menu -->
                             <!-- Header Start -->
                             <div class="header-area main-header2 wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">
@@ -208,12 +211,12 @@
                                         <div class="main-menu main-menu2 text-center">
                                             <nav>
                                                 <ul>
-                                                    <li><a href="index.html">Home</a></li>
-                                                    <li><a href="about.html">About</a></li>
-                                                    <li><a href="courses.html">Courses</a></li>
-                                                    <li><a href="pricing.html">Pricing</a></li>
-                                                    <li><a href="gallery.html">Gallery</a></li>
-                                                    <li><a href="contact.html">Contact</a></li>
+                                                <li><a href="{{ url_for('home') }}">Home</a></li>
+                                    <li><a href="{{ url_for('about') }}">About</a></li>
+                                    <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                    <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                    <li><a href="{{ url_for('tracking') }}">Tracking</a></li>               
+                                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
                                                 </ul>
                                             </nav>
                                         </div>   
@@ -231,10 +234,10 @@
                     </div>
                 </div>
             </div>
-            <!-- Footer Bottom -->
-            
-      <!-- Footer End-->
-  </footer>
+        </div>
+    </div>
+    <!-- Footer End-->
+</footer>
   <!-- Scroll Up -->
   <div id="back-top" >
     <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>

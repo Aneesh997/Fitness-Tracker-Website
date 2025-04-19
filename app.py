@@ -185,6 +185,129 @@ def sleep():
         return redirect(url_for('login'))
     return render_template('sleep.html', username=session.get('user'))
 
+@app.route('/workout')
+def workout():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template('workout.html', username=session.get('user'))
+
+# Workout API Endpoints
+@app.route('/api/workouts', methods=['GET'])
+def get_workout_plans():
+    try:
+        workouts = [
+            {"id": 1, "name": "Running", "calories_per_min": 10, "image": "running.jpg"},
+            {"id": 2, "name": "Jogging", "calories_per_min": 8, "image": "jogging.jpg"},
+            {"id": 3, "name": "Treadmill", "calories_per_min": 7, "image": "treadmill.jpg"},
+            {"id": 4, "name": "Cycling", "calories_per_min": 6, "image": "cycling.jpg"},
+            {"id": 5, "name": "Swimming", "calories_per_min": 9, "image": "swimming.jpg"},
+            {"id": 6, "name": "Weight Training", "calories_per_min": 5, "image": "weights.jpg"},
+            {"id": 7, "name": "Yoga", "calories_per_min": 3, "image": "yoga.jpg"},
+            {"id": 8, "name": "HIIT", "calories_per_min": 12, "image": "hiit.jpg"},
+            {"id": 9, "name": "Rowing", "calories_per_min": 8, "image": "rowing.jpg"},
+            {"id": 10, "name": "Stair Climbing", "calories_per_min": 9, "image": "stairs.jpg"}
+        ]
+        return jsonify({'success': True, 'workouts': workouts})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/workout', methods=['POST'])
+def save_workout():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    data = request.get_json()
+    username = session['user']
+    workout_id = data['workout_id']
+    workout_name = data['workout_name']
+    duration = data['duration']
+    calories = data['calories']
+    date = data.get('date') or datetime.now().strftime('%Y-%m-%d')
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO workout_data 
+            (username, workout_id, workout_name, duration, calories, date) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (username, workout_id, workout_name, duration, calories, date))
+        conn.commit()
+        return jsonify({
+            'success': True, 
+            'message': 'Workout saved successfully',
+            'id': cursor.lastrowid
+        })
+    except Error as e:
+        conn.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/workout', methods=['GET'])
+def get_workout_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    date = request.args.get('date', datetime.now().strftime('%Y-%m-%d'))
+    
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT id, workout_id, workout_name, duration, calories, date 
+            FROM workout_data 
+            WHERE username = %s AND date = %s
+            ORDER BY id DESC
+        """, (username, date))
+        workout_data = cursor.fetchall()
+        return jsonify({'success': True, 'data': workout_data})
+    except Error as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/workout/<int:id>', methods=['DELETE'])
+def delete_workout_entry(id):
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            DELETE FROM workout_data 
+            WHERE id = %s AND username = %s
+        """, (id, username))
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            return jsonify({
+                'success': False, 
+                'message': 'Entry not found or not owned by user'
+            }), 404
+            
+        return jsonify({
+            'success': True, 
+            'message': 'Workout entry deleted successfully'
+        })
+    except Error as e:
+        conn.rollback()
+        return jsonify({
+            'success': False, 
+            'message': f'Error deleting workout entry: {str(e)}'
+        }), 500
+    finally:
+        cursor.close()
+        conn.close()
+
 @app.route('/api/sleep', methods=['POST'])
 def save_sleep_data():
     if 'user' not in session:
@@ -240,18 +363,6 @@ def get_sleep_data():
         cursor.close()
         conn.close()
 
-@app.route('/contact_submit', methods=['POST'])
-def contact_submit():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-    
-    name = request.form.get('name')
-    email = request.form.get('email')
-    subject = request.form.get('subject')
-    message = request.form.get('message')
-    
-    flash('Your message has been sent successfully!', 'success')
-    return redirect(url_for('contact'))
 
 # ... (keep all your existing routes until the diet section) ...
 
@@ -390,5 +501,37 @@ def get_dishes():
             'message': f'Error fetching dishes: {str(e)}'
         }), 500
 
+# Add this new route to your existing app.py
+@app.route('/contact_submit', methods=['POST'])
+def contact_submit():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        subject = request.form.get('subject')
+        message = request.form.get('message')
+        ip_address = request.remote_addr
+
+        conn = create_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                INSERT INTO contact_submissions 
+                (name, email, subject, message, ip_address) 
+                VALUES (%s, %s, %s, %s, %s)
+            """, (name, email, subject, message, ip_address))
+            conn.commit()
+            
+            flash('Your message has been sent successfully! We will get back to you soon.', 'success')
+            return redirect(url_for('contact'))
+            
+        except Error as e:
+            conn.rollback()
+            flash('There was an error submitting your message. Please try again later.', 'error')
+            return redirect(url_for('contact'))
+            
+        finally:
+            cursor.close()
+            conn.close()
 if __name__ == '__main__':
     app.run(debug=True)
