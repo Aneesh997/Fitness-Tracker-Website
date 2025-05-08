@@ -1,0 +1,402 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AI Assistant | Gym Trainer</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 60vh;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            word-wrap: break-word;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .user-bubble {
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .coach-bubble {
+            background: #ffffff;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .typing-indicator {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #ffffff;
+            border-radius: 20px;
+            align-self: flex-start;
+            margin-bottom: 15px;
+        }
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #666;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        #userInput {
+            border-radius: 25px;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+            resize: none;
+        }
+        #userInput:focus {
+            border-color: #43cea2;
+            box-shadow: 0 0 0 0.2rem rgba(67, 206, 162, 0.25);
+        }
+        .send-btn {
+            border-radius: 25px;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            border: none;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .send-btn:active {
+            transform: translateY(0);
+        }
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .suggestion-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .suggestion-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+    <script>
+        // Handle sending questions
+        function sendQuestion() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            if (!message) return;
+        
+            const chatBox = document.getElementById('chatBox');
+            const sendBtn = document.getElementById('sendBtn');
+        
+            // Disable send button during processing
+            sendBtn.disabled = true;
+            userInput.disabled = true;
+        
+            // Add user's message bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble user-bubble';
+            userBubble.innerText = message;
+            chatBox.appendChild(userBubble);
+        
+            // Clear input
+            userInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        
+            // Show typing indicator
+            showTypingIndicator();
+        
+            // Send to backend
+            fetch('/ai_coach', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ question: message })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideTypingIndicator();
+                
+                // Add coach's response bubble
+                const coachBubble = document.createElement('div');
+                coachBubble.className = 'chat-bubble coach-bubble';
+                coachBubble.innerHTML = data.answer.replace(/\n/g, '<br>');
+                chatBox.appendChild(coachBubble);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch(error => {
+                hideTypingIndicator();
+                console.error('Error:', error);
+                
+                // Show error message
+                const errorBubble = document.createElement('div');
+                errorBubble.className = 'chat-bubble coach-bubble';
+                errorBubble.innerHTML = "Sorry, I'm having trouble connecting. Please try again later.";
+                chatBox.appendChild(errorBubble);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .finally(() => {
+                // Re-enable input
+                sendBtn.disabled = false;
+                userInput.disabled = false;
+                userInput.focus();
+            });
+        }
+        </script>
+</head>
+<body style="background: linear-gradient(135deg, #ff7e5f, #feb47b); min-height: 100vh;">
+
+<header>
+    <div class="header-area header-transparent">
+        <div class="main-header header-sticky">
+            <div class="container-fluid">
+                <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                    <div class="main-menu f-right d-none d-lg-block">
+                        <nav>
+                            <ul id="navigation">
+                                <li><a href="{{ url_for('home') }}">Home</a></li>
+                                <li><a href="{{ url_for('about') }}">About</a></li>
+                                <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                                <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                                <li><a href="{{ url_for('tracking') }}">Tracker</a></li>
+                                <li class="active"><a href="{{ url_for('ai_coach') }}">AI Assistant</a></li>
+                                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header-btns d-none d-lg-block f-right">
+                        {% if 'user' in session %}
+                            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn">Login</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="text-center py-5">
+        <div class="container">
+            <br>
+            <br>
+            <h1 style="font-size: 3rem; color: #fff; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">🤖 Your AI Gym Coach</h1>
+            <p style="font-size: 1.2rem; color: rgba(255,255,255,0.9);">Ask anything about workouts, nutrition, and health!</p>
+
+            <div class="row justify-content-center mt-4">
+                <div class="col-lg-8 col-md-10">
+                    <div class="card p-4" style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                        <!-- Chat container -->
+                        <div id="chatBox" class="chat-container">
+                            <!-- Initial greeting message -->
+                            <div class="chat-bubble coach-bubble">
+                                Hi there! I'm your AI Gym Coach. How can I help you today? You can ask me about:
+                                <ul>
+                                    <li>Workout routines</li>
+                                    <li>Nutrition advice</li>
+                                    <li>Exercise techniques</li>
+                                    <li>Recovery tips</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Input area -->
+                        <div class="d-flex align-items-center">
+                            <textarea id="userInput" class="form-control" rows="1" placeholder="Type your fitness question here..."></textarea>
+                            <button id="sendBtn" onclick="sendQuestion()" class="send-btn">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+
+                        <!-- Quick suggestions -->
+                        <div class="suggestions mt-3">
+                            <div class="suggestion-btn" onclick="quickQuestion('What\'s a good full-body workout?')">Full-body workout</div>
+                            <div class="suggestion-btn" onclick="quickQuestion('How much protein should I eat?')">Protein intake</div>
+                            <div class="suggestion-btn" onclick="quickQuestion('Best exercises for abs?')">Ab exercises</div>
+                            <div class="suggestion-btn" onclick="quickQuestion('How to improve my sleep?')">Sleep tips</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- JS here -->
+<script src="{{ url_for('static', filename='js/vendor/jquery-1.12.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+// Add typing indicator
+function showTypingIndicator() {
+    const chatBox = document.getElementById('chatBox');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'typing-indicator';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+    `;
+    chatBox.appendChild(typingDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Remove typing indicator
+function hideTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+// Handle quick suggestion clicks
+function quickQuestion(question) {
+    document.getElementById('userInput').value = question;
+    sendQuestion();
+}
+
+// Handle sending questions
+function sendQuestion() {
+    const userInput = document.getElementById('userInput');
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    const chatBox = document.getElementById('chatBox');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // Disable send button during processing
+    sendBtn.disabled = true;
+    userInput.disabled = true;
+
+    // Add user's message bubble
+    const userBubble = document.createElement('div');
+    userBubble.className = 'chat-bubble user-bubble';
+    userBubble.innerText = message;
+    chatBox.appendChild(userBubble);
+
+    // Clear input
+    userInput.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Show typing indicator
+    showTypingIndicator();
+
+    // Send to backend
+    fetch('/ai_coach', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: message })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        hideTypingIndicator();
+        
+        // Add coach's response bubble
+        const coachBubble = document.createElement('div');
+        coachBubble.className = 'chat-bubble coach-bubble';
+        coachBubble.innerHTML = data.answer.replace(/\n/g, '<br>'); // Preserve line breaks
+        chatBox.appendChild(coachBubble);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    })
+    .catch(error => {
+        hideTypingIndicator();
+        console.error('Error:', error);
+        
+        // Show error message
+        const errorBubble = document.createElement('div');
+        errorBubble.className = 'chat-bubble coach-bubble';
+        errorBubble.innerHTML = "Sorry, I'm having trouble connecting. Please try again later.";
+        chatBox.appendChild(errorBubble);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    })
+    .finally(() => {
+        // Re-enable input
+        sendBtn.disabled = false;
+        userInput.disabled = false;
+        userInput.focus();
+    });
+}
+
+// Allow sending with Enter key (Shift+Enter for new line)
+document.getElementById('userInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendQuestion();
+    }
+});
+
+// Auto-resize textarea as user types
+document.getElementById('userInput').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
+
+// Focus input on page load
+window.onload = function() {
+    document.getElementById('userInput').focus();
+};
+</script>
+
+</body>
+</html>
