@@ -21,19 +21,27 @@ app.logger.addHandler(log_handler)
 
 # Configuration
 USE_LOCAL_MODEL = True
-MODEL_NAME = "google/gemma-2b-it"
+MODEL_PATH = "/app/model"  # Path where model is mounted in Docker
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+# Force offline mode
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
+os.environ["HF_DATASETS_OFFLINE"] = "1"
 
 # Initialize model safely
 try:
     if USE_LOCAL_MODEL:
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        model = AutoModelForCausalLM.from_pretrained(
-            MODEL_NAME,
-            device_map="auto",
-            torch_dtype=torch.float16 if DEVICE == "cuda" else torch.float32
+        tokenizer = AutoTokenizer.from_pretrained(
+            MODEL_PATH,
+            local_files_only=True
         )
-        app.logger.info(f"Model loaded on {DEVICE.upper()}")
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_PATH,
+            device_map="auto",
+            torch_dtype=torch.float16 if DEVICE == "cuda" else torch.float32,
+            local_files_only=True
+        )
+        app.logger.info(f"Model loaded on {DEVICE.upper()} from local cache")
 except Exception as e:
     app.logger.error(f"Model loading failed: {str(e)}")
     USE_LOCAL_MODEL = False
@@ -47,14 +55,18 @@ def generate_local_response(prompt):
     try:
         inputs = tokenizer(prompt, return_tensors="pt").to(DEVICE)
         
+        # Conservative generation parameters for 4GB GPUs
+        generation_config = {
+            'max_new_tokens': 150,  # Reduced from 200
+            'temperature': 0.7,
+            'do_sample': True,
+            'pad_token_id': tokenizer.eos_token_id,
+            'early_stopping': True,
+            'num_beams': 1  # Disable beam search to save memory
+        }
+        
         with torch.inference_mode():
-            outputs = model.generate(
-                **inputs,
-                max_new_tokens=200,
-                temperature=0.7,
-                do_sample=True,
-                pad_token_id=tokenizer.eos_token_id
-            )
+            outputs = model.generate(**inputs, **generation_config)
         
         answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
         return answer.replace(prompt, '').strip(), True
@@ -62,8 +74,11 @@ def generate_local_response(prompt):
     except RuntimeError as e:
         if "CUDA out of memory" in str(e):
             torch.cuda.empty_cache()
-            return "Please try a shorter prompt (GPU memory limit reached)", False
+            return "The AI is currently overloaded. Please try a shorter question.", False
         return f"Generation error: {str(e)}", False
+    finally:
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     
 def limit_words(text, max_words):
     """Enforce strict word limit without cutting mid-sentence"""
@@ -71,7 +86,6 @@ def limit_words(text, max_words):
     if len(words) <= max_words:
         return text
     
-    # Find the last sentence end before limit
     last_period = 0
     for i in range(min(max_words, len(words))-1, 0, -1):
         if words[i] in {'.', '!', '?'}:
@@ -84,7 +98,7 @@ def limit_words(text, max_words):
 def create_connection():
     try:
         return mysql.connector.connect(
-            host="localhost",
+            host="host.docker.internal",
             user="root",
             password="1234",
             database="user_db"
@@ -649,6 +663,7 @@ def contact_submit():
             conn.close()
 
 # AI Coach Route
+# Updated AI Coach Route with better error handling and memory management
 @app.route('/ai_coach', methods=['GET', 'POST'])
 def ai_coach():
     if request.method == 'GET':
@@ -661,41 +676,50 @@ def ai_coach():
             return jsonify({'error': 'Please log in to use the AI coach'}), 401
         
         try:
-            if request.is_json:
-                data = request.get_json()
-                question = data.get('question', '').strip()
-            else:
-                question = request.form.get('question', '').strip()
+            # Get question from request
+            data = request.get_json() if request.is_json else request.form
+            question = data.get('question', '').strip()
             
             if not question:
                 return jsonify({'error': 'Please enter a question'}), 400
 
-            if USE_LOCAL_MODEL and model and tokenizer:
-                answer, success = generate_local_response(question)
-                if success:
+            # Enhanced model loading with fallbacks
+            if USE_LOCAL_MODEL:
+                try:
+                    # Clear GPU cache before generation
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                    
+                    # Generate response with memory limits
+                    answer, success = generate_local_response(question)
+                    if success:
+                        return jsonify({'answer': answer})
+                    
+                    # If generation failed, try CPU fallback
+                    app.logger.warning(f"GPU generation failed, trying CPU fallback: {answer}")
+                    DEVICE = "cpu"
+                    model.to('cpu')
+                    answer, _ = generate_local_response(question)
                     return jsonify({'answer': answer})
-                return jsonify({'error': answer}), 500
+                
+                except RuntimeError as e:
+                    if "CUDA out of memory" in str(e):
+                        torch.cuda.empty_cache()
+                        return jsonify({
+                            'error': 'The AI is currently overloaded. Please try a shorter question or wait a moment.'
+                        }), 503
+                    raise
 
-            # API fallback
-            try:
-                headers = {"Authorization": f"Bearer {os.getenv('HF_API_KEY', '')}"}
-                response = requests.post(
-                    f"https://api-inference.huggingface.co/models/{MODEL_NAME}",
-                    headers=headers,
-                    json={"inputs": question},
-                    timeout=30
-                )
-                response.raise_for_status()
-                answer = response.json()[0]['generated_text']
-                return jsonify({'answer': answer.replace(question, '').strip()})
-            
-            except Exception as e:
-                app.logger.error(f"API error: {str(e)}")
-                return jsonify({'error': str(e)}), 500
+            # If local model fails completely
+            return jsonify({
+                'error': 'AI service is temporarily unavailable. Please try again later.'
+            }), 503
 
         except Exception as e:
             app.logger.error(f"AI coach error: {str(e)}")
-            return jsonify({'error': 'Internal server error'}), 500
+            return jsonify({
+                'error': 'An unexpected error occurred. Our team has been notified.'
+            }), 500
 
     return jsonify({'error': 'Method not allowed'}), 405
 

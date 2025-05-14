@@ -11,3 +11,10 @@ Database error: 1064 (42000): You have an error in your SQL syntax; check the ma
 Database error: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s, %s, %s, %s, %s, %s, %s)' at line 3
 Database error: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s, %s, %s, %s, %s, %s, %s)' at line 3
 Database error: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s, %s, %s, %s, %s, %s, %s)' at line 3
+Model loading failed: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/app/model'. Use `repo_type` argument if needed.
+Model loading failed: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/app/model'. Use `repo_type` argument if needed.
+Database connection error: 2003 (HY000): Can't connect to MySQL server on 'host.docker.internal:3306' (10060)
+Database error: 2003 (HY000): Can't connect to MySQL server on 'host.docker.internal:3306' (10060)
+Database connection error: 2003 (HY000): Can't connect to MySQL server on 'host.docker.internal:3306' (10060)
+Database error: 2003 (HY000): Can't connect to MySQL server on 'host.docker.internal:3306' (10060)
+Model loading failed: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/app/model'. Use `repo_type` argument if needed.
