@@ -312,13 +312,207 @@ def diet():
     return render_template('diet.html', username=session.get('user'))
 
 # API Endpoints
+
+
+@app.route('/api/sleep', methods=['POST'])
+def save_sleep_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    data = request.get_json()
+    username = session['user']
+    total_sleep = data['total_sleep']
+    deep_sleep = data['deep_sleep']
+    normal_sleep = data['normal_sleep']
+    light_sleep = data['light_sleep']
+    awake_time = data['awake_time']
+    date = data.get('date')  # Optional date parameter
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO sleep_data 
+            (username, total_sleep, deep_sleep, normal_sleep, light_sleep, awake_time, date) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (username, total_sleep, deep_sleep, normal_sleep, light_sleep, awake_time, date))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Sleep data saved successfully'})
+    except Error as e:
+        conn.rollback()
+        return jsonify({'success': False, 'message': 'Error saving sleep data'}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/sleep', methods=['GET'])
+def get_sleep_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT * FROM sleep_data 
+            WHERE username = %s 
+            ORDER BY date DESC, id DESC
+        """, (username,))
+        sleep_data = cursor.fetchall()
+        return jsonify({'success': True, 'data': sleep_data})
+    except Error as e:
+        return jsonify({'success': False, 'message': 'Error fetching sleep data'}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/diet', methods=['POST'])
+def save_diet_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    data = request.get_json()
+    username = session['user']
+    dish_name = data['dish_name']
+    protein = data['protein']
+    carbs = data['carbs']
+    calories = data['calories']
+    fat = data['fat']
+    date = data.get('date') or datetime.now().strftime('%Y-%m-%d')
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO diet_data 
+            (username, dish_name, protein, carbs, calories, fat, date) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (username, dish_name, protein, carbs, calories, fat, date))
+        conn.commit()
+        return jsonify({
+            'success': True, 
+            'message': 'Diet data saved successfully',
+            'id': cursor.lastrowid
+        })
+    except Error as e:
+        conn.rollback()
+        return jsonify({
+            'success': False, 
+            'message': f'Error saving diet data: {str(e)}'
+        }), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/diet', methods=['GET'])
+def get_diet_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    date = request.args.get('date', datetime.now().strftime('%Y-%m-%d'))
+    
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT id, dish_name, protein, carbs, fat, calories, date 
+            FROM diet_data 
+            WHERE username = %s AND date = %s
+            ORDER BY id DESC
+        """, (username, date))
+        diet_data = cursor.fetchall()
+        return jsonify({'success': True, 'data': diet_data})
+    except Error as e:
+        return jsonify({
+            'success': False, 
+            'message': f'Error fetching diet data: {str(e)}'
+        }), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/diet/<int:id>', methods=['DELETE'])
+def delete_diet_entry(id):
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        # First verify the entry belongs to the user
+        cursor.execute("""
+            DELETE FROM diet_data 
+            WHERE id = %s AND username = %s
+        """, (id, username))
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            return jsonify({
+                'success': False, 
+                'message': 'Entry not found or not owned by user'
+            }), 404
+            
+        return jsonify({
+            'success': True, 
+            'message': 'Diet entry deleted successfully'
+        })
+    except Error as e:
+        conn.rollback()
+        return jsonify({
+            'success': False, 
+            'message': f'Error deleting diet entry: {str(e)}'
+        }), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/dishes', methods=['GET'])
+def get_dishes():
+    try:
+        dishes = [
+            {"name": "Grilled Chicken", "protein": 31, "carbs": 0, "calories": 165, "fat": 3.6, "image": "Grilled Chicken.jpg"},
+            {"name": "Salmon Fillet", "protein": 25, "carbs": 0, "calories": 206, "fat": 13, "image": "Salmon Fillet.jpg"},
+            {"name": "Vegetable Stir Fry", "protein": 4, "carbs": 12, "calories": 120, "fat": 7, "image": "Vegitable Stir Fry.png"},
+            {"name": "Greek Yogurt", "protein": 10, "carbs": 9, "calories": 100, "fat": 0.4, "image": "Greek Yogurt.jpg"},
+            {"name": "Oatmeal", "protein": 5, "carbs": 27, "calories": 150, "fat": 2.5, "image": "Oatmeal.jpg"},
+            {"name": "Quinoa Salad", "protein": 8, "carbs": 39, "calories": 222, "fat": 4, "image": "Quinoa Salad.jpg"},
+            {"name": "Avocado Toast", "protein": 4, "carbs": 25, "calories": 220, "fat": 15, "image": "Avocado Toast.jpg"},
+            {"name": "Egg White Omelette", "protein": 18, "carbs": 2, "calories": 100, "fat": 4, "image": "Egg White Omelette.jpg"},
+            {"name": "Sweet Potato", "protein": 2, "carbs": 27, "calories": 114, "fat": 0.1, "image": "Sweet Potato.jpeg"},
+            {"name": "Tuna Salad", "protein": 29, "carbs": 5, "calories": 179, "fat": 6, "image": "Tuna Salad.jpg"},
+            {"name": "Brown Rice", "protein": 5, "carbs": 45, "calories": 215, "fat": 1.8, "image": "Brown Rice.jpg"},
+            {"name": "Protein Shake", "protein": 24, "carbs": 8, "calories": 160, "fat": 2, "image": "Protein Shake.jpg"}
+        ]
+        return jsonify({'success': True, 'dishes': dishes})
+    except Exception as e:
+        return jsonify({
+            'success': False, 
+            'message': f'Error fetching dishes: {str(e)}'
+        }), 500
+
+
 @app.route('/api/workouts', methods=['GET'])
 def get_workout_plans():
     try:
         workouts = [
             {"id": 1, "name": "Running", "calories_per_min": 10, "image": "running.jpg"},
             {"id": 2, "name": "Jogging", "calories_per_min": 8, "image": "jogging.jpg"},
-            # ... (other workout items)
+            {"id": 3, "name": "Treadmill", "calories_per_min": 7, "image": "treadmill.jpg"},
+            {"id": 4, "name": "Cycling", "calories_per_min": 6, "image": "cycling.jpg"},
+            {"id": 5, "name": "Swimming", "calories_per_min": 9, "image": "swimming.jpg"},
+            {"id": 6, "name": "Weight Training", "calories_per_min": 5, "image": "weights.jpg"},
+            {"id": 7, "name": "Yoga", "calories_per_min": 3, "image": "yoga.jpg"},
+            {"id": 8, "name": "HIIT", "calories_per_min": 12, "image": "hiit.jpg"},
+            {"id": 9, "name": "Rowing", "calories_per_min": 8, "image": "rowing.jpg"},
+            {"id": 10, "name": "Stair Climbing", "calories_per_min": 9, "image": "stairs.jpg"}
         ]
         return jsonify({'success': True, 'workouts': workouts})
     except Exception as e:
@@ -359,6 +553,67 @@ def save_workout():
         cursor.close()
         conn.close()
 
+@app.route('/api/workout', methods=['GET'])
+def get_workout_data():
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    date = request.args.get('date', datetime.now().strftime('%Y-%m-%d'))
+    
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT id, workout_id, workout_name, duration, calories, date 
+            FROM workout_data 
+            WHERE username = %s AND date = %s
+            ORDER BY id DESC
+        """, (username, date))
+        workout_data = cursor.fetchall()
+        return jsonify({'success': True, 'data': workout_data})
+    except Error as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/workout/<int:id>', methods=['DELETE'])
+def delete_workout_entry(id):
+    if 'user' not in session:
+        return jsonify({'success': False, 'message': 'Not logged in'}), 401
+    
+    username = session['user']
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            DELETE FROM workout_data 
+            WHERE id = %s AND username = %s
+        """, (id, username))
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            return jsonify({
+                'success': False, 
+                'message': 'Entry not found or not owned by user'
+            }), 404
+            
+        return jsonify({
+            'success': True, 
+            'message': 'Workout entry deleted successfully'
+        })
+    except Error as e:
+        conn.rollback()
+        return jsonify({
+            'success': False, 
+            'message': f'Error deleting workout entry: {str(e)}'
+        }), 500
+    finally:
+        cursor.close()
+        conn.close()
 # ... (other API endpoints for workout, sleep, diet)
 
 @app.route('/contact_submit', methods=['POST'])

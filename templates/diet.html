@@ -217,371 +217,371 @@
     
     <!-- React Diet Tracker App -->
     <script type="text/babel">
-        {% raw %}
-        function NutritionPieChart({ protein, carbs, fat }) {
-            const chartRef = React.useRef(null);
-            const chartInstance = React.useRef(null);
-            
-            React.useEffect(() => {
-                if (chartRef.current) {
-                    if (chartInstance.current) {
-                        chartInstance.current.destroy();
-                    }
-                    
-                    const ctx = chartRef.current.getContext('2d');
-                    chartInstance.current = new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: ['Protein', 'Carbs', 'Fat'],
-                            datasets: [{
-                                data: [protein, carbs, fat],
-                                backgroundColor: [
-                                    '#4e73df',
-                                    '#1cc88a',
-                                    '#f6c23e'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false
-                        }
-                    });
+    {% raw %}
+    function NutritionPieChart({ protein, carbs, fat }) {
+        const chartRef = React.useRef(null);
+        const chartInstance = React.useRef(null);
+        
+        React.useEffect(() => {
+            if (chartRef.current) {
+                if (chartInstance.current) {
+                    chartInstance.current.destroy();
                 }
                 
-                return () => {
-                    if (chartInstance.current) {
-                        chartInstance.current.destroy();
+                const ctx = chartRef.current.getContext('2d');
+                chartInstance.current = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Protein', 'Carbs', 'Fat'],
+                        datasets: [{
+                            data: [protein, carbs, fat],
+                            backgroundColor: [
+                                '#4e73df',
+                                '#1cc88a',
+                                '#f6c23e'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
                     }
-                };
-            }, [protein, carbs, fat]);
+                });
+            }
             
-            return <canvas ref={chartRef} />;
-        }
+            return () => {
+                if (chartInstance.current) {
+                    chartInstance.current.destroy();
+                }
+            };
+        }, [protein, carbs, fat]);
         
-        function DishItem({ dish, onAddToDiet }) {
-            const [expanded, setExpanded] = React.useState(false);
-            
-            return (
-                <div className="card mb-3">
-                    <div className="card-header d-flex justify-content-between align-items-center" 
-                         onClick={() => setExpanded(!expanded)}>
-                        <h5 className="mb-0">{dish.name}</h5>
-                        <div>
-                            <button 
-                                className="btn btn-sm btn-primary mr-2"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onAddToDiet(dish);
-                                }}
-                            >
-                                <i className="fas fa-plus"></i> Add
-                            </button>
-                            <i className={`fas fa-chevron-${expanded ? 'up' : 'down'}`}></i>
-                        </div>
+        return <canvas ref={chartRef} />;
+    }
+    
+    function DishItem({ dish, onAddToDiet }) {
+        const [expanded, setExpanded] = React.useState(false);
+        
+        return (
+            <div className="card mb-3">
+                <div className="card-header d-flex justify-content-between align-items-center" 
+                     onClick={() => setExpanded(!expanded)}>
+                    <h5 className="mb-0">{dish.name}</h5>
+                    <div>
+                        <button 
+                            className="btn btn-sm btn-primary mr-2"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAddToDiet(dish);
+                            }}
+                        >
+                            <i className="fas fa-plus"></i> Add
+                        </button>
+                        <i className={`fas fa-chevron-${expanded ? 'up' : 'down'}`}></i>
                     </div>
-                    {expanded && (
-                        <div className="card-body">
-                            <div className="row">
-                                <div className="col-md-4">
-                                    {dish.image && (
-                                        <img 
-                                            src={`/static/img/dishes/${dish.image}`}
-                                            className="img-fluid mb-3"
-                                            alt={dish.name}
-                                            style={{
-                                                maxHeight: '200px',
-                                                width: '100%',
-                                                objectFit: 'cover',
-                                                borderRadius: '8px'
-                                            }}
-                                            onError={(e) => {
-                                                e.target.onerror = null;
-                                                e.target.src = '/static/img/placeholder.jpg';
-                                            }}
-                                        />
-                                    )}
+                </div>
+                {expanded && (
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-4">
+                                {dish.image && (
+                                    <img 
+                                        src={`/static/img/dishes/${dish.image}`}
+                                        className="img-fluid mb-3"
+                                        alt={dish.name}
+                                        style={{
+                                            maxHeight: '200px',
+                                            width: '100%',
+                                            objectFit: 'cover',
+                                            borderRadius: '8px'
+                                        }}
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = '/static/img/placeholder.jpg';
+                                        }}
+                                    />
+                                )}
+                            </div>
+                            <div className="col-md-4">
+                                <div className="chart-container" style={{height: '200px'}}>
+                                    <NutritionPieChart 
+                                        protein={dish.protein}
+                                        carbs={dish.carbs}
+                                        fat={dish.fat}
+                                    />
                                 </div>
-                                <div className="col-md-4">
-                                    <div className="chart-container" style={{height: '200px'}}>
-                                        <NutritionPieChart 
-                                            protein={dish.protein}
-                                            carbs={dish.carbs}
-                                            fat={dish.fat}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-md-4">
-                                    <div className="nutrition-facts">
-                                        <h6>Nutrition Facts</h6>
-                                        <p><strong>Calories:</strong> {dish.calories} kcal</p>
-                                        <p><strong>Protein:</strong> {dish.protein}g</p>
-                                        <p><strong>Carbs:</strong> {dish.carbs}g</p>
-                                        <p><strong>Fat:</strong> {dish.fat}g</p>
-                                    </div>
+                            </div>
+                            <div className="col-md-4">
+                                <div className="nutrition-facts">
+                                    <h6>Nutrition Facts</h6>
+                                    <p><strong>Calories:</strong> {dish.calories} kcal</p>
+                                    <p><strong>Protein:</strong> {dish.protein}g</p>
+                                    <p><strong>Carbs:</strong> {dish.carbs}g</p>
+                                    <p><strong>Fat:</strong> {dish.fat}g</p>
                                 </div>
                             </div>
                         </div>
-                    )}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    function DietEntry({ entry, onRemove }) {
+        return (
+            <tr>
+                <td>{entry.dish_name}</td>
+                <td>{entry.protein}g</td>
+                <td>{entry.carbs}g</td>
+                <td>{entry.fat}g</td>
+                <td>{entry.calories} kcal</td>
+                <td>
+                    <button 
+                        className="btn btn-sm btn-danger"
+                        onClick={() => onRemove(entry.id)}
+                    >
+                        <i className="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        );
+    }
+
+    function DietTracker() {
+        const [dishes, setDishes] = React.useState([]);
+        const [dietEntries, setDietEntries] = React.useState([]);
+        const [currentDate, setCurrentDate] = React.useState(new Date().toISOString().split('T')[0]);
+        const [isLoading, setIsLoading] = React.useState(false);
+        const [message, setMessage] = React.useState(null);
+        
+        const fetchDishes = async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetch('/api/dishes');
+                const data = await response.json();
+                if (data.success) {
+                    setDishes(data.dishes);
+                } else {
+                    setMessage({text: data.message || 'Failed to fetch dishes', type: 'error'});
+                }
+            } catch (error) {
+                setMessage({text: 'Failed to fetch dishes: ' + error.message, type: 'error'});
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        const fetchDietData = async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetch(`/api/diet?date=${currentDate}`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    setDietEntries(data.data);
+                } else {
+                    setMessage({text: data.message || 'Failed to fetch diet data', type: 'error'});
+                }
+            } catch (error) {
+                setMessage({text: 'Failed to fetch diet data: ' + error.message, type: 'error'});
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        const addToDiet = async (dish) => {
+            setIsLoading(true);
+            try {
+                const response = await fetch('/api/diet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        dish_name: dish.name,
+                        protein: dish.protein,
+                        carbs: dish.carbs,
+                        calories: dish.calories,
+                        fat: dish.fat,
+                        date: currentDate
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    setMessage({text: 'Dish added to your diet!', type: 'success'});
+                    fetchDietData();
+                } else {
+                    setMessage({text: data.message || 'Failed to add dish', type: 'error'});
+                }
+            } catch (error) {
+                setMessage({text: 'Failed to add dish: ' + error.message, type: 'error'});
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        const removeFromDiet = async (id) => {
+            setIsLoading(true);
+            try {
+                const response = await fetch(`/api/diet/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    setMessage({text: 'Entry removed successfully', type: 'success'});
+                    fetchDietData();
+                } else {
+                    setMessage({text: data.message || 'Failed to remove entry', type: 'error'});
+                }
+            } catch (error) {
+                setMessage({text: 'Failed to remove entry: ' + error.message, type: 'error'});
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        const navigateDate = (days) => {
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() + days);
+            setCurrentDate(date.toISOString().split('T')[0]);
+        };
+        
+        React.useEffect(() => {
+            fetchDishes();
+            fetchDietData();
+        }, [currentDate]);
+        
+        const getTotalNutrition = () => {
+            return dietEntries.reduce((acc, entry) => {
+                acc.protein += parseFloat(entry.protein) || 0;
+                acc.carbs += parseFloat(entry.carbs) || 0;
+                acc.fat += parseFloat(entry.fat) || 0;
+                acc.calories += parseFloat(entry.calories) || 0;
+                return acc;
+            }, { protein: 0, carbs: 0, fat: 0, calories: 0 });
+        };
+        
+        const total = getTotalNutrition();
+        
+        return (
+            <div className="diet-tracker-container">
+                <div className="date-navigation mb-4">
+                    <button 
+                        className="btn btn-secondary"
+                        onClick={() => navigateDate(-1)}
+                    >
+                        <i className="fas fa-chevron-left"></i> Previous Day
+                    </button>
+                    <h4 className="d-inline-block mx-3">{new Date(currentDate).toDateString()}</h4>
+                    <button 
+                        className="btn btn-secondary"
+                        onClick={() => navigateDate(1)}
+                        disabled={currentDate >= new Date().toISOString().split('T')[0]}
+                    >
+                        Next Day <i className="fas fa-chevron-right"></i>
+                    </button>
                 </div>
-            );
-        }
-    
-        function DietEntry({ entry, onRemove }) {
-            return (
-                <tr>
-                    <td>{entry.dish_name}</td>
-                    <td>{entry.protein}g</td>
-                    <td>{entry.carbs}g</td>
-                    <td>{entry.fat}g</td>
-                    <td>{entry.calories} kcal</td>
-                    <td>
+                
+                {message && (
+                    <div className={`alert alert-${message.type === 'error' ? 'danger' : message.type === 'success' ? 'success' : 'warning'}`}>
+                        {message.text}
                         <button 
-                            className="btn btn-sm btn-danger"
-                            onClick={() => onRemove(entry.id)}
+                            type="button" 
+                            className="close" 
+                            onClick={() => setMessage(null)}
+                            style={{float: 'right'}}
                         >
-                            <i className="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            );
-        }
-    
-        function DietTracker() {
-            const [dishes, setDishes] = React.useState([]);
-            const [dietEntries, setDietEntries] = React.useState([]);
-            const [currentDate, setCurrentDate] = React.useState(new Date().toISOString().split('T')[0]);
-            const [isLoading, setIsLoading] = React.useState(false);
-            const [message, setMessage] = React.useState(null);
-            
-            const fetchDishes = async () => {
-                setIsLoading(true);
-                try {
-                    const response = await fetch('/api/dishes');
-                    const data = await response.json();
-                    if (data.success) {
-                        setDishes(data.dishes);
-                    } else {
-                        setMessage({text: data.message || 'Failed to fetch dishes', type: 'error'});
-                    }
-                } catch (error) {
-                    setMessage({text: 'Failed to fetch dishes: ' + error.message, type: 'error'});
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            
-            const fetchDietData = async () => {
-                setIsLoading(true);
-                try {
-                    const response = await fetch(`/api/diet?date=${currentDate}`, {
-                        credentials: 'include'
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        setDietEntries(data.data);
-                    } else {
-                        setMessage({text: data.message || 'Failed to fetch diet data', type: 'error'});
-                    }
-                } catch (error) {
-                    setMessage({text: 'Failed to fetch diet data: ' + error.message, type: 'error'});
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            
-            const addToDiet = async (dish) => {
-                setIsLoading(true);
-                try {
-                    const response = await fetch('/api/diet', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({
-                            dish_name: dish.name,
-                            protein: dish.protein,
-                            carbs: dish.carbs,
-                            calories: dish.calories,
-                            fat: dish.fat,
-                            date: currentDate
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    if (data.success) {
-                        setMessage({text: 'Dish added to your diet!', type: 'success'});
-                        fetchDietData();
-                    } else {
-                        setMessage({text: data.message || 'Failed to add dish', type: 'error'});
-                    }
-                } catch (error) {
-                    setMessage({text: 'Failed to add dish: ' + error.message, type: 'error'});
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            
-            const removeFromDiet = async (id) => {
-                setIsLoading(true);
-                try {
-                    const response = await fetch(`/api/diet/${id}`, {
-                        method: 'DELETE',
-                        credentials: 'include'
-                    });
-                    
-                    const data = await response.json();
-                    if (data.success) {
-                        setMessage({text: 'Entry removed successfully', type: 'success'});
-                        fetchDietData();
-                    } else {
-                        setMessage({text: data.message || 'Failed to remove entry', type: 'error'});
-                    }
-                } catch (error) {
-                    setMessage({text: 'Failed to remove entry: ' + error.message, type: 'error'});
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            
-            const navigateDate = (days) => {
-                const date = new Date(currentDate);
-                date.setDate(date.getDate() + days);
-                setCurrentDate(date.toISOString().split('T')[0]);
-            };
-            
-            React.useEffect(() => {
-                fetchDishes();
-                fetchDietData();
-            }, [currentDate]);
-            
-            const getTotalNutrition = () => {
-                return dietEntries.reduce((acc, entry) => {
-                    acc.protein += parseFloat(entry.protein) || 0;
-                    acc.carbs += parseFloat(entry.carbs) || 0;
-                    acc.fat += parseFloat(entry.fat) || 0;
-                    acc.calories += parseFloat(entry.calories) || 0;
-                    return acc;
-                }, { protein: 0, carbs: 0, fat: 0, calories: 0 });
-            };
-            
-            const total = getTotalNutrition();
-            
-            return (
-                <div className="diet-tracker-container">
-                    <div className="date-navigation mb-4">
-                        <button 
-                            className="btn btn-secondary"
-                            onClick={() => navigateDate(-1)}
-                        >
-                            <i className="fas fa-chevron-left"></i> Previous Day
-                        </button>
-                        <h4 className="d-inline-block mx-3">{new Date(currentDate).toDateString()}</h4>
-                        <button 
-                            className="btn btn-secondary"
-                            onClick={() => navigateDate(1)}
-                            disabled={currentDate >= new Date().toISOString().split('T')[0]}
-                        >
-                            Next Day <i className="fas fa-chevron-right"></i>
+                            <span>&times;</span>
                         </button>
                     </div>
-                    
-                    {message && (
-                        <div className={`alert alert-${message.type === 'error' ? 'danger' : message.type === 'success' ? 'success' : 'warning'}`}>
-                            {message.text}
-                            <button 
-                                type="button" 
-                                className="close" 
-                                onClick={() => setMessage(null)}
-                                style={{float: 'right'}}
-                            >
-                                <span>&times;</span>
-                            </button>
-                        </div>
-                    )}
-                    
-                    <div className="row">
-                        <div className="col-md-8">
-                            <h4 className="mb-3">Available Dishes</h4>
-                            {isLoading && dishes.length === 0 ? (
-                                <div className="text-center py-4">
-                                    <div className="spinner-border text-primary" role="status">
-                                        <span className="sr-only">Loading...</span>
-                                    </div>
+                )}
+                
+                <div className="row">
+                    <div className="col-md-8">
+                        <h4 className="mb-3">Available Dishes</h4>
+                        {isLoading && dishes.length === 0 ? (
+                            <div className="text-center py-4">
+                                <div className="spinner-border text-primary" role="status">
+                                    <span className="sr-only">Loading...</span>
                                 </div>
-                            ) : (
-                                <div className="dishes-list">
-                                    {dishes.map(dish => (
-                                        <DishItem 
-                                            key={dish.name} 
-                                            dish={dish} 
-                                            onAddToDiet={addToDiet}
-                                        />
-                                    ))}
+                            </div>
+                        ) : (
+                            <div className="dishes-list">
+                                {dishes.map(dish => (
+                                    <DishItem 
+                                        key={dish.name} 
+                                        dish={dish} 
+                                        onAddToDiet={addToDiet}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="col-md-4">
+                        <div className="card mb-4">
+                            <div className="card-body">
+                                <h5 className="card-title">Daily Summary</h5>
+                                <div className="chart-container" style={{height: '200px'}}>
+                                    <NutritionPieChart 
+                                        protein={total.protein}
+                                        carbs={total.carbs}
+                                        fat={total.fat}
+                                    />
                                 </div>
-                            )}
+                                <div className="nutrition-facts mt-3">
+                                    <p><strong>Total Calories:</strong> {total.calories.toFixed(1)} kcal</p>
+                                    <p><strong>Protein:</strong> {total.protein.toFixed(1)}g</p>
+                                    <p><strong>Carbs:</strong> {total.carbs.toFixed(1)}g</p>
+                                    <p><strong>Fat:</strong> {total.fat.toFixed(1)}g</p>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div className="col-md-4">
-                            <div className="card mb-4">
-                                <div className="card-body">
-                                    <h5 className="card-title">Daily Summary</h5>
-                                    <div className="chart-container" style={{height: '200px'}}>
-                                        <NutritionPieChart 
-                                            protein={total.protein}
-                                            carbs={total.carbs}
-                                            fat={total.fat}
-                                        />
-                                    </div>
-                                    <div className="nutrition-facts mt-3">
-                                        <p><strong>Total Calories:</strong> {total.calories.toFixed(1)} kcal</p>
-                                        <p><strong>Protein:</strong> {total.protein.toFixed(1)}g</p>
-                                        <p><strong>Carbs:</strong> {total.carbs.toFixed(1)}g</p>
-                                        <p><strong>Fat:</strong> {total.fat.toFixed(1)}g</p>
-                                    </div>
-                                </div>
+                        <h5 className="mb-3">Today's Meals</h5>
+                        {dietEntries.length > 0 ? (
+                            <div className="table-responsive">
+                                <table className="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Dish</th>
+                                            <th>Protein</th>
+                                            <th>Carbs</th>
+                                            <th>Fat</th>
+                                            <th>Calories</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {dietEntries.map(entry => (
+                                            <DietEntry 
+                                                key={entry.id} 
+                                                entry={entry} 
+                                                onRemove={removeFromDiet}
+                                            />
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
-                            
-                            <h5 className="mb-3">Today's Meals</h5>
-                            {dietEntries.length > 0 ? (
-                                <div className="table-responsive">
-                                    <table className="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Dish</th>
-                                                <th>Protein</th>
-                                                <th>Carbs</th>
-                                                <th>Fat</th>
-                                                <th>Calories</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {dietEntries.map(entry => (
-                                                <DietEntry 
-                                                    key={entry.id} 
-                                                    entry={entry} 
-                                                    onRemove={removeFromDiet}
-                                                />
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            ) : (
-                                <div className="alert alert-info">
-                                    No diet entries for this day. Add dishes to track your nutrition.
-                                </div>
-                            )}
-                        </div>
+                        ) : (
+                            <div className="alert alert-info">
+                                No diet entries for this day. Add dishes to track your nutrition.
+                            </div>
+                        )}
                     </div>
                 </div>
-            );
-        }
-        
-        ReactDOM.render(<DietTracker />, document.getElementById('diet-tracker-app'));
-        {% endraw %}
-    </script>
+            </div>
+        );
+    }
+    
+    ReactDOM.render(<DietTracker />, document.getElementById('diet-tracker-app'));
+    {% endraw %}
+</script>
 </body>
 </html>
