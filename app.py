@@ -123,7 +123,7 @@ def _handle_error(message, status_code, is_json=False):
 def index():
     if 'user' in session:
         return redirect(url_for('home'))
-    return render_template('login.html')
+    return render_template('loin.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -275,7 +275,7 @@ def courses():
 def pricing():
     if 'user' not in session:
         return redirect(url_for('login'))
-    return render_template('pricing.html', username=session['user'])
+    return render_template('pring.html', username=session['user'])
 
 @app.route('/contact')
 def contact():
